@@ -1,0 +1,634 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		65055CDA2DCD99AF006DC249 /* Swiftagram in Frameworks */ = {isa = PBXBuildFile; productRef = 65055CD92DCD99AF006DC249 /* Swiftagram */; };
+		65055CDC2DCD99AF006DC249 /* SwiftagramCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 65055CDB2DCD99AF006DC249 /* SwiftagramCrypto */; };
+		65C4DA852DCD6DF800D1E956 /* Swiftagram in Frameworks */ = {isa = PBXBuildFile; productRef = 65C4DA842DCD6DF800D1E956 /* Swiftagram */; };
+		65C4DA872DCD6DF800D1E956 /* SwiftagramCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 65C4DA862DCD6DF800D1E956 /* SwiftagramCrypto */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		654F29BA2DC0955C00CD4963 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 654F299B2DC0955900CD4963 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 654F29A22DC0955900CD4963;
+			remoteInfo = Snowpiercer;
+		};
+		654F29C42DC0955C00CD4963 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 654F299B2DC0955900CD4963 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 654F29A22DC0955900CD4963;
+			remoteInfo = Snowpiercer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		654F29A32DC0955900CD4963 /* Snowpiercer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snowpiercer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		654F29B92DC0955C00CD4963 /* SnowpiercerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnowpiercerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		654F29C32DC0955C00CD4963 /* SnowpiercerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SnowpiercerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		654F29CB2DC0955C00CD4963 /* Exceptions for "Snowpiercer" folder in "Snowpiercer" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 654F29A22DC0955900CD4963 /* Snowpiercer */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		654F29A52DC0955900CD4963 /* Snowpiercer */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				654F29CB2DC0955C00CD4963 /* Exceptions for "Snowpiercer" folder in "Snowpiercer" target */,
+			);
+			path = Snowpiercer;
+			sourceTree = "<group>";
+		};
+		654F29BC2DC0955C00CD4963 /* SnowpiercerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SnowpiercerTests;
+			sourceTree = "<group>";
+		};
+		654F29C62DC0955C00CD4963 /* SnowpiercerUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SnowpiercerUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		654F29A02DC0955900CD4963 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65055CDA2DCD99AF006DC249 /* Swiftagram in Frameworks */,
+				65C4DA872DCD6DF800D1E956 /* SwiftagramCrypto in Frameworks */,
+				65055CDC2DCD99AF006DC249 /* SwiftagramCrypto in Frameworks */,
+				65C4DA852DCD6DF800D1E956 /* Swiftagram in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F29B62DC0955C00CD4963 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F29C02DC0955C00CD4963 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		651F012C2DC8177C00528452 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		654F299A2DC0955900CD4963 = {
+			isa = PBXGroup;
+			children = (
+				654F29A52DC0955900CD4963 /* Snowpiercer */,
+				654F29BC2DC0955C00CD4963 /* SnowpiercerTests */,
+				654F29C62DC0955C00CD4963 /* SnowpiercerUITests */,
+				651F012C2DC8177C00528452 /* Frameworks */,
+				654F29A42DC0955900CD4963 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		654F29A42DC0955900CD4963 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				654F29A32DC0955900CD4963 /* Snowpiercer.app */,
+				654F29B92DC0955C00CD4963 /* SnowpiercerTests.xctest */,
+				654F29C32DC0955C00CD4963 /* SnowpiercerUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		654F29A22DC0955900CD4963 /* Snowpiercer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 654F29CC2DC0955C00CD4963 /* Build configuration list for PBXNativeTarget "Snowpiercer" */;
+			buildPhases = (
+				654F299F2DC0955900CD4963 /* Sources */,
+				654F29A02DC0955900CD4963 /* Frameworks */,
+				654F29A12DC0955900CD4963 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				654F29A52DC0955900CD4963 /* Snowpiercer */,
+			);
+			name = Snowpiercer;
+			packageProductDependencies = (
+				65C4DA842DCD6DF800D1E956 /* Swiftagram */,
+				65C4DA862DCD6DF800D1E956 /* SwiftagramCrypto */,
+				65055CD92DCD99AF006DC249 /* Swiftagram */,
+				65055CDB2DCD99AF006DC249 /* SwiftagramCrypto */,
+			);
+			productName = Snowpiercer;
+			productReference = 654F29A32DC0955900CD4963 /* Snowpiercer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		654F29B82DC0955C00CD4963 /* SnowpiercerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 654F29D12DC0955C00CD4963 /* Build configuration list for PBXNativeTarget "SnowpiercerTests" */;
+			buildPhases = (
+				654F29B52DC0955C00CD4963 /* Sources */,
+				654F29B62DC0955C00CD4963 /* Frameworks */,
+				654F29B72DC0955C00CD4963 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				654F29BB2DC0955C00CD4963 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				654F29BC2DC0955C00CD4963 /* SnowpiercerTests */,
+			);
+			name = SnowpiercerTests;
+			packageProductDependencies = (
+			);
+			productName = SnowpiercerTests;
+			productReference = 654F29B92DC0955C00CD4963 /* SnowpiercerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		654F29C22DC0955C00CD4963 /* SnowpiercerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 654F29D42DC0955C00CD4963 /* Build configuration list for PBXNativeTarget "SnowpiercerUITests" */;
+			buildPhases = (
+				654F29BF2DC0955C00CD4963 /* Sources */,
+				654F29C02DC0955C00CD4963 /* Frameworks */,
+				654F29C12DC0955C00CD4963 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				654F29C52DC0955C00CD4963 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				654F29C62DC0955C00CD4963 /* SnowpiercerUITests */,
+			);
+			name = SnowpiercerUITests;
+			packageProductDependencies = (
+			);
+			productName = SnowpiercerUITests;
+			productReference = 654F29C32DC0955C00CD4963 /* SnowpiercerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		654F299B2DC0955900CD4963 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					654F29A22DC0955900CD4963 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					654F29B82DC0955C00CD4963 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 654F29A22DC0955900CD4963;
+					};
+					654F29C22DC0955C00CD4963 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 654F29A22DC0955900CD4963;
+					};
+				};
+			};
+			buildConfigurationList = 654F299E2DC0955900CD4963 /* Build configuration list for PBXProject "Snowpiercer" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 654F299A2DC0955900CD4963;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				65055CD82DCD99AF006DC249 /* XCRemoteSwiftPackageReference "Swiftagram" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 654F29A42DC0955900CD4963 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				654F29A22DC0955900CD4963 /* Snowpiercer */,
+				654F29B82DC0955C00CD4963 /* SnowpiercerTests */,
+				654F29C22DC0955C00CD4963 /* SnowpiercerUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		654F29A12DC0955900CD4963 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F29B72DC0955C00CD4963 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F29C12DC0955C00CD4963 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		654F299F2DC0955900CD4963 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F29B52DC0955C00CD4963 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F29BF2DC0955C00CD4963 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		654F29BB2DC0955C00CD4963 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 654F29A22DC0955900CD4963 /* Snowpiercer */;
+			targetProxy = 654F29BA2DC0955C00CD4963 /* PBXContainerItemProxy */;
+		};
+		654F29C52DC0955C00CD4963 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 654F29A22DC0955900CD4963 /* Snowpiercer */;
+			targetProxy = 654F29C42DC0955C00CD4963 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		654F29CD2DC0955C00CD4963 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Snowpiercer/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noosreg.Snowpiercer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		654F29CE2DC0955C00CD4963 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Snowpiercer/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noosreg.Snowpiercer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		654F29CF2DC0955C00CD4963 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		654F29D02DC0955C00CD4963 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		654F29D22DC0955C00CD4963 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noosreg.SnowpiercerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Snowpiercer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Snowpiercer";
+			};
+			name = Debug;
+		};
+		654F29D32DC0955C00CD4963 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noosreg.SnowpiercerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Snowpiercer.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Snowpiercer";
+			};
+			name = Release;
+		};
+		654F29D52DC0955C00CD4963 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noosreg.SnowpiercerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Snowpiercer;
+			};
+			name = Debug;
+		};
+		654F29D62DC0955C00CD4963 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 626FRPWPF5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.noosreg.SnowpiercerUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Snowpiercer;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		654F299E2DC0955900CD4963 /* Build configuration list for PBXProject "Snowpiercer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				654F29CF2DC0955C00CD4963 /* Debug */,
+				654F29D02DC0955C00CD4963 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		654F29CC2DC0955C00CD4963 /* Build configuration list for PBXNativeTarget "Snowpiercer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				654F29CD2DC0955C00CD4963 /* Debug */,
+				654F29CE2DC0955C00CD4963 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		654F29D12DC0955C00CD4963 /* Build configuration list for PBXNativeTarget "SnowpiercerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				654F29D22DC0955C00CD4963 /* Debug */,
+				654F29D32DC0955C00CD4963 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		654F29D42DC0955C00CD4963 /* Build configuration list for PBXNativeTarget "SnowpiercerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				654F29D52DC0955C00CD4963 /* Debug */,
+				654F29D62DC0955C00CD4963 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		65055CD82DCD99AF006DC249 /* XCRemoteSwiftPackageReference "Swiftagram" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sbertix/Swiftagram.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		65055CD92DCD99AF006DC249 /* Swiftagram */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65055CD82DCD99AF006DC249 /* XCRemoteSwiftPackageReference "Swiftagram" */;
+			productName = Swiftagram;
+		};
+		65055CDB2DCD99AF006DC249 /* SwiftagramCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65055CD82DCD99AF006DC249 /* XCRemoteSwiftPackageReference "Swiftagram" */;
+			productName = SwiftagramCrypto;
+		};
+		65C4DA842DCD6DF800D1E956 /* Swiftagram */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Swiftagram;
+		};
+		65C4DA862DCD6DF800D1E956 /* SwiftagramCrypto */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftagramCrypto;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 654F299B2DC0955900CD4963 /* Project object */;
+}

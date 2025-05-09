@@ -1,0 +1,42 @@
+{
+  "originHash" : "db96b6c1bf1dd87d5c95681604779cb698f8a86ae0c168f424ae8df9a5f6d9d2",
+  "pins" : [
+    {
+      "identity" : "composablerequest",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sbertix/ComposableRequest",
+      "state" : {
+        "revision" : "f192c0e543dc85716e783f155d125149b423b488",
+        "version" : "5.3.3"
+      }
+    },
+    {
+      "identity" : "keychainaccess",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kishikawakatsumi/KeychainAccess",
+      "state" : {
+        "revision" : "84e546727d66f1adc5439debad16270d0fdd04e7",
+        "version" : "4.2.2"
+      }
+    },
+    {
+      "identity" : "swcrypt",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sbertix/SwCrypt.git",
+      "state" : {
+        "revision" : "e850285c2dadd4343be9465adc67cd717a64792f",
+        "version" : "5.1.4"
+      }
+    },
+    {
+      "identity" : "swiftagram",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sbertix/Swiftagram.git",
+      "state" : {
+        "revision" : "de8a5d840a81b3d0dd66f0dc45304c54f29d0fda",
+        "version" : "5.4.0"
+      }
+    }
+  ],
+  "version" : 3
+}
