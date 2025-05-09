@@ -1,0 +1,49 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and Test (Xcode)
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Select Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.2'
+
+      - name: Build project
+        run: |
+          xcodebuild clean build \
+            -project Snowpiercer.xcodeproj \
+            -scheme Snowpiercer \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 14'
+
+      - name: Run tests
+        run: |
+          xcodebuild test \
+            -project Snowpiercer.xcodeproj \
+            -scheme Snowpiercer \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 14'
+
+      # - name: Generate code coverage report (optional)
+      #   run: |
+      #     xcrun xccov view --report \
+      #       build/Logs/Test/*.xcresult
+
+      # - name: Export IPA for distribution (optional)
+      #   run: |
+      #     xcodebuild -exportArchive \
+      #       -archivePath build/Snowpiercer.xcarchive \
+      #       -exportOptionsPlist ExportOptions.plist \
+      #       -exportPath build/ipa
