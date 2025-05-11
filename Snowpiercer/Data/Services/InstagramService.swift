@@ -10,13 +10,6 @@ import Swiftagram
 import SwiftagramCrypto
 import Combine
 
-// MARK: - Services
-protocol InstagramServiceProtocol {
-    func login(viewController: UIViewController)async throws -> Secret
-    func fetchFollowing(secret: Secret) async throws -> [InstagramUser]
-    func fetchFollowers(secret: Secret) async throws -> [InstagramUser]
-}
-
 class InstagramService: InstagramServiceProtocol {
     
     func login(viewController: UIViewController) async throws -> Secret {

@@ -27,7 +27,7 @@ final class LoginViewController: UIViewController {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = 16
-        stack.alignment = .center
+        stack.alignment = .leading
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -50,8 +50,6 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
-        self.mainStack.backgroundColor = .blue
         setupLayout()
         bindViewModel()
         loadAccounts()

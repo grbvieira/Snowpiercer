@@ -9,10 +9,6 @@ import Combine
 import Swiftagram
 import UIKit
 
-protocol UserServiceProtocol {
-    func fetchUserInfo(secret: Secret) async throws -> InstagramUser
-}
-
 class UserService: UserServiceProtocol {
     private var bin: Set<AnyCancellable> = []  
     func fetchUserInfo(secret: Swiftagram.Secret) async throws -> InstagramUser {

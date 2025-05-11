@@ -49,7 +49,7 @@ final class ProfileView: UIView {
         let containerStack = UIStackView(arrangedSubviews: [avatar, labelsStack])
         containerStack.axis = .horizontal
         containerStack.spacing = 12
-        containerStack.alignment = .center
+        containerStack.alignment = .leading
         containerStack.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(containerStack)
