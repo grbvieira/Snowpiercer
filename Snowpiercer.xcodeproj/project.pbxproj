@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		65055CDA2DCD99AF006DC249 /* Swiftagram in Frameworks */ = {isa = PBXBuildFile; productRef = 65055CD92DCD99AF006DC249 /* Swiftagram */; };
 		65055CDC2DCD99AF006DC249 /* SwiftagramCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 65055CDB2DCD99AF006DC249 /* SwiftagramCrypto */; };
+		65B3D40B2DCFEED600AA1CD6 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 65B3D40A2DCFEED600AA1CD6 /* Nuke */; };
+		65B3D40D2DCFEED600AA1CD6 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 65B3D40C2DCFEED600AA1CD6 /* NukeExtensions */; };
+		65B3D40F2DCFEED600AA1CD6 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 65B3D40E2DCFEED600AA1CD6 /* NukeUI */; };
+		65B3D4112DCFEED600AA1CD6 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 65B3D4102DCFEED600AA1CD6 /* NukeVideo */; };
 		65C4DA852DCD6DF800D1E956 /* Swiftagram in Frameworks */ = {isa = PBXBuildFile; productRef = 65C4DA842DCD6DF800D1E956 /* Swiftagram */; };
 		65C4DA872DCD6DF800D1E956 /* SwiftagramCrypto in Frameworks */ = {isa = PBXBuildFile; productRef = 65C4DA862DCD6DF800D1E956 /* SwiftagramCrypto */; };
 /* End PBXBuildFile section */
@@ -73,9 +77,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				65055CDA2DCD99AF006DC249 /* Swiftagram in Frameworks */,
+				65B3D40F2DCFEED600AA1CD6 /* NukeUI in Frameworks */,
 				65C4DA872DCD6DF800D1E956 /* SwiftagramCrypto in Frameworks */,
+				65B3D4112DCFEED600AA1CD6 /* NukeVideo in Frameworks */,
 				65055CDC2DCD99AF006DC249 /* SwiftagramCrypto in Frameworks */,
 				65C4DA852DCD6DF800D1E956 /* Swiftagram in Frameworks */,
+				65B3D40B2DCFEED600AA1CD6 /* Nuke in Frameworks */,
+				65B3D40D2DCFEED600AA1CD6 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +156,10 @@
 				65C4DA862DCD6DF800D1E956 /* SwiftagramCrypto */,
 				65055CD92DCD99AF006DC249 /* Swiftagram */,
 				65055CDB2DCD99AF006DC249 /* SwiftagramCrypto */,
+				65B3D40A2DCFEED600AA1CD6 /* Nuke */,
+				65B3D40C2DCFEED600AA1CD6 /* NukeExtensions */,
+				65B3D40E2DCFEED600AA1CD6 /* NukeUI */,
+				65B3D4102DCFEED600AA1CD6 /* NukeVideo */,
 			);
 			productName = Snowpiercer;
 			productReference = 654F29A32DC0955900CD4963 /* Snowpiercer.app */;
@@ -233,6 +245,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				65055CD82DCD99AF006DC249 /* XCRemoteSwiftPackageReference "Swiftagram" */,
+				65B3D4092DCFEED600AA1CD6 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 654F29A42DC0955900CD4963 /* Products */;
@@ -607,6 +620,14 @@
 				minimumVersion = 5.4.0;
 			};
 		};
+		65B3D4092DCFEED600AA1CD6 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -619,6 +640,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 65055CD82DCD99AF006DC249 /* XCRemoteSwiftPackageReference "Swiftagram" */;
 			productName = SwiftagramCrypto;
+		};
+		65B3D40A2DCFEED600AA1CD6 /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65B3D4092DCFEED600AA1CD6 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		65B3D40C2DCFEED600AA1CD6 /* NukeExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65B3D4092DCFEED600AA1CD6 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeExtensions;
+		};
+		65B3D40E2DCFEED600AA1CD6 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65B3D4092DCFEED600AA1CD6 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
+		};
+		65B3D4102DCFEED600AA1CD6 /* NukeVideo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 65B3D4092DCFEED600AA1CD6 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeVideo;
 		};
 		65C4DA842DCD6DF800D1E956 /* Swiftagram */ = {
 			isa = XCSwiftPackageProductDependency;

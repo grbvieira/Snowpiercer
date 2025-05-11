@@ -12,36 +12,55 @@ import Swiftagram
 @MainActor
 final class LoginViewModel {
     let service: InstagramServiceProtocol
+    let userService: UserServiceProtocol
     
     //Outputs
-    @Published var savedSecrets: [Secret] = []
+    @Published var savedAccounts: [SavedAccount] = []
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
     
-    init(service: InstagramServiceProtocol) {
+    init(service: InstagramServiceProtocol, userService: UserServiceProtocol) {
         self.service = service
+        self.userService = userService
         loadSavedAccounts()
     }
     
     func loadSavedAccounts() {
-        do {
-            let secrets = try Authenticator.keychain.secrets.get()
-            savedSecrets = secrets
-        } catch {
-            savedSecrets = []
-            errorMessage = "Failed to load saved account"
+        Task {
+            do {
+                let secrets = try Authenticator.keychain.secrets.get()
+                var accounts: [SavedAccount] = []
+
+                for secret in secrets {
+                    do {
+                        let user = try await userService.fetchUserInfo(secret: secret)
+                        let account = SavedAccount(secret: secret, user: user)
+                        accounts.append(account)
+                    } catch {
+                        print("Failed to fetch info for \(secret.identifier): \(error)")
+                    }
+                }
+                savedAccounts = accounts
+                errorMessage = nil
+            } catch {
+                savedAccounts = []
+                errorMessage = "Failed to load saved accounts."
+            }
         }
     }
+
     
     func login(from viewController: UIViewController) async {
-        isLoading = true
-        do {
-            let secret = try await service.login(viewController: viewController)
-            savedSecrets.append(secret)
-            errorMessage = nil
-        } catch {
-            errorMessage = "Login failed: \(error.localizedDescription)"
+            isLoading = true
+            do {
+                let secret = try await service.login(viewController: viewController)
+                let user = try await userService.fetchUserInfo(secret: secret)
+                let account = SavedAccount(secret: secret, user: user)
+                savedAccounts.append(account)
+                errorMessage = nil
+            } catch {
+                errorMessage = "Login failed: \(error.localizedDescription)"
+            }
+            isLoading = false
         }
-        isLoading = false
-    }
 }

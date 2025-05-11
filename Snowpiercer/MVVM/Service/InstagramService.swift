@@ -57,7 +57,7 @@ class InstagramService: InstagramServiceProtocol {
                 }, receiveValue: { users in
                     let instagramUsers = users.compactMap { user -> InstagramUser? in
                         guard let username = user.username else { return nil }
-                        return InstagramUser(username: username, fullName: user.name, profilePicURL: user.thumbnail)
+                        return InstagramUser(username: username, fullName: user.name, profilePicURL: user.thumbnail, avatar: user.thumbnail)
                     }
                     continuation.resume(returning: instagramUsers)
                 })

@@ -50,6 +50,8 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = .white
+        self.mainStack.backgroundColor = .blue
         setupLayout()
         bindViewModel()
         loadAccounts()
@@ -73,53 +75,61 @@ final class LoginViewController: UIViewController {
     }
     
     private func bindViewModel() {
-           viewModel.$savedSecrets
-               .receive(on: DispatchQueue.main)
-               .sink { [weak self] secrets in
-                   self?.updateAccounts(secrets: secrets)
-               }
-               .store(in: &subscriptions)
-           viewModel.$errorMessage
-               .compactMap { $0 }
-               .receive(on: DispatchQueue.main)
-               .sink { [weak self] errorMessage in
-                   self?.showAlert(message: errorMessage)
-               }
-               .store(in: &subscriptions)
-           // Optional: show loading indicator with viewModel.$isLoading
-       }
+        viewModel.$savedAccounts
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] accounts in
+                self?.updateAccounts(accounts: accounts)
+            }
+            .store(in: &subscriptions)
+        
+        viewModel.$errorMessage
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] errorMessage in
+                self?.showAlert(message: errorMessage)
+            }
+            .store(in: &subscriptions)
+        // Optional: show loading indicator with viewModel.$isLoading
+    }
     
-       private func loadAccounts() {
-           viewModel.loadSavedAccounts()
-       }
+    private func loadAccounts() {
+        viewModel.loadSavedAccounts()
+    }
     
-    private func updateAccounts(secrets: [Secret]) {
-          mainStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-          guard !secrets.isEmpty else {
-              headerLabel.text = "No saved accounts. Add one?"
-              return
-          }
-          headerLabel.text = "Saved Accounts"
-          for secret in secrets {
-              let button = UIButton(type: .system)
-              button.setTitle("Login as \(secret.identifier)", for: .normal)
-              button.titleLabel?.font = .systemFont(ofSize: 18)
-              button.contentHorizontalAlignment = .left
-             // button.tag = secrets.firstIndex(of: secret) ?? 0
-              button.addTarget(self, action: #selector(handleAccountTap(_:)), for: .touchUpInside)
-              mainStack.addArrangedSubview(button)
-          }
-      }
+    private func updateAccounts(accounts: [SavedAccount]) {
+        mainStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        guard !accounts.isEmpty else {
+            headerLabel.text = "No saved accounts. Add one?"
+            return
+        }
+        
+        headerLabel.text = "Saved Accounts"
+        
+        let urls = accounts.map(\.user.avatar)
+        AvatarImagePreheater.shared.preheat(urls: urls)
+        
+        for (index, account) in accounts.enumerated() {
+            let profileView = ProfileView(user: account)
+            profileView.tag = index
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleAccountTap(_:)))
+            profileView.addGestureRecognizer(tapGesture)
+            profileView.isUserInteractionEnabled = true
+            mainStack.addArrangedSubview(profileView)
+        }
+    }
     
-    @objc private func didTapLogin() {
+    @objc
+    private func didTapLogin() {
         Task {
             await viewModel.login(from: self)
         }
     }
     
-    @objc private func handleAccountTap(_ sender: UIButton) {
-        guard sender.tag < viewModel.savedSecrets.count else { return }
-        let selectedSecret = viewModel.savedSecrets[sender.tag]
+    @objc
+    private func handleAccountTap(_ sender: UIButton) {
+        guard sender.tag < viewModel.savedAccounts.count else { return }
+        let selectedSecret = viewModel.savedAccounts[sender.tag].secret
         openNonFollowers(secret: selectedSecret)
     }
     

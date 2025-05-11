@@ -18,18 +18,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        
-        //        if let secret = try? Authenticator.keychain.secrets.get().first {
-        //            let viewModel = UnfollowersViewModel(service: InstagramService())
-        //            window.rootViewController = NonFollowersViewController(secret: secret, viewModel: viewModel)
-        //        } else {
-        // window.rootViewController = LoginViewController(viewModel: LoginViewModel(service: InstagramService()))
-        // }
-        //        self.window = window
-        //        window.makeKeyAndVisible()
-        // Setup dependencies
         let instagramService = InstagramService()
-        let loginViewModel = LoginViewModel(service: instagramService)
+        let userService = UserService()
+        let loginViewModel = LoginViewModel(service: instagramService, userService: userService)
         let loginVC = LoginViewController(viewModel: loginViewModel)
         let navVC = UINavigationController(rootViewController: loginVC)
         window.rootViewController = navVC
