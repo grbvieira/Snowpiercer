@@ -11,4 +11,5 @@ struct InstagramUser: Hashable {
     let username: String
     let fullName: String?
     let profilePicURL: URL?
+    let avatar: URL?
 }
