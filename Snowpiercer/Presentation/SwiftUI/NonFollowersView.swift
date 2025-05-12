@@ -13,26 +13,48 @@ struct NonFollowersView: View {
     @StateObject var viewModel: UnfollowersViewModel
     
     var body: some View {
-        List(viewModel.nonFollowers, id: \ .username) { user in
-            HStack {
-             ProfileRowView(user: user)
-            }
-            .padding(.vertical, 4)
-        }
-        .navigationTitle("Quem não te segue")
-        .onAppear {
-            viewModel.fetchNonFollowers(secret: user.secret)
-        }
-        .overlay {
-            if viewModel.isLoading {
-                ProgressView("Carregando...")
-                    .progressViewStyle(CircularProgressViewStyle())
+        
+        VStack(alignment: .leading) {
+            SearchBarView(placeholder: "Username ou nome") {
+                /// Fazer busca
             }
         }
-        .alert("Erro", isPresented: .constant(viewModel.errorMessage != nil)) {
-            Button("Fechar", role: .cancel) {}
-        } message: {
-            Text(viewModel.errorMessage ?? "Erro desconhecido")
+        .padding(.horizontal)
+        
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(viewModel.nonFollowers, id: \.username) { user in
+                    HStack {
+                        ProfileRowView(user: user)
+                        
+                        FollowButton {
+                            if let url = URL(string: "https://instagram.com/\(user.username)") {
+                                UIApplication.shared.open(url)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 6)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+                }
+            }
+            .padding(.horizontal)
+            .navigationTitle("Quem não te segue")
+            .task {
+                await viewModel.fetchNonFollowers(secret: user.secret)
+            }
+            .overlay {
+                if viewModel.isLoading {
+                    ProgressView("Carregando...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                }
+            }
+            .alert("Erro", isPresented: .constant(viewModel.errorMessage != nil)) {
+                Button("Fechar", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorMessage ?? "Erro desconhecido")
+            }
         }
     }
 }
