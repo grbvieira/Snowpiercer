@@ -20,11 +20,8 @@ class UserService: UserServiceProtocol {
                 .compactMap(\.user)
                 .sink(receiveCompletion: { _ in },
                       receiveValue: { user in
-                    let account = InstagramUser(username: user.username,
-                                                fullName: user.name,
-                                                profilePicURL: user.thumbnail,
-                                                avatar: user.avatar)
-                    continuation.resume(returning: account)
+                    let account = InstagramUserDTO(from: user)
+                    continuation.resume(returning: account.toDomain())
                 })
                 .store(in: &self.bin)
         }

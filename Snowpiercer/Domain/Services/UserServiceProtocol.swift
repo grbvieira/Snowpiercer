@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Swiftagram
 
 protocol UserServiceProtocol {
     func fetchUserInfo(secret: Secret) async throws -> InstagramUser

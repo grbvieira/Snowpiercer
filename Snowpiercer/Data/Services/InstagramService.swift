@@ -11,16 +11,7 @@ import SwiftagramCrypto
 import Combine
 
 class InstagramService: InstagramServiceProtocol {
-    
-    func login(viewController: UIViewController) async throws -> Secret {
-        let loginVC = await InstagramLoginViewController()
-        await viewController.present(loginVC, animated: true)
-        let secret = try await loginVC.authenticate()
-        await viewController.dismiss(animated: true)
-        return secret
-    }
-    
-    private var bin: Set<AnyCancellable> = []
+    private var bin = Set<AnyCancellable>()
     
     func fetchFollowers(secret: Secret) async throws -> [InstagramUser] {
         try await fetchUsers(for: secret, isFollowers: true)
@@ -32,7 +23,9 @@ class InstagramService: InstagramServiceProtocol {
     
     func fetchUsers(for secret: Secret, isFollowers: Bool) async throws -> [InstagramUser] {
         return try await withCheckedThrowingContinuation { continuation in
-            let publisher = isFollowers ? Endpoint.user(secret.identifier).followers : Endpoint.user(secret.identifier).following
+            let publisher = isFollowers ?
+            Endpoint.user(secret.identifier).followers :
+            Endpoint.user(secret.identifier).following
             
             publisher
                 .unlock(with: secret)
@@ -48,10 +41,7 @@ class InstagramService: InstagramServiceProtocol {
                         continuation.resume(throwing: error)
                     }
                 }, receiveValue: { users in
-                    let instagramUsers = users.compactMap { user -> InstagramUser? in
-                        guard let username = user.username else { return nil }
-                        return InstagramUser(username: username, fullName: user.name, profilePicURL: user.thumbnail, avatar: user.thumbnail)
-                    }
+                    let instagramUsers = users.compactMap { InstagramUserDTO(from: $0).toDomain() }
                     continuation.resume(returning: instagramUsers)
                 })
                 .store(in: &self.bin)

@@ -15,7 +15,7 @@ struct InstagramUserDTO {
     let avatar: URL?
 
     init(from user: Swiftagram.User) {
-        self.username = user.username ?? ""
+        self.username = user.username ?? String()
         self.fullName = user.name
         self.profilePicURL = user.thumbnail
         self.avatar = user.avatar

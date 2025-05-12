@@ -1,126 +1,75 @@
-//
-//  AvatarView.swift
-//  Snowpiercer
-//
-//  Created by Gerson Vieira on 10/05/25.
-//
-
-import UIKit
+import SwiftUI
 import Nuke
 
-final class AvatarView: UIView {
-
-    // MARK: - Cache (manual)
-    private static let imageCache = NSCache<NSURL, UIImage>()
-
-    // MARK: - UI Components
-    private let imageView: UIImageView = {
-        let iv = UIImageView()
-        iv.contentMode = .scaleAspectFill
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        return iv
-    }()
-
-    private let initialsLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .white
-        label.textAlignment = .center
-        label.backgroundColor = .gray
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-
-    private let size: CGFloat
-    private let imageURL: URL?
-    private lazy var fallbackInitial: String = {
-        fallbackName?.first.map { String($0).uppercased() } ?? "?"
-    }()
-
-    private let fallbackName: String?
-
-    // MARK: - Init
-    init(url: URL?, fallbackName: String? = nil, size: CGFloat = 60) {
-        self.imageURL = url
-        self.fallbackName = fallbackName
-        self.size = size
-        super.init(frame: .zero)
-        setupUI()
-        loadImage()
+struct AvatarView: View {
+    
+    enum switchSize: CGFloat {
+        case max = 60
+        case min = 30
     }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    let size: switchSize
+    let user: InstagramUser
+    
+    @State private var image: UIImage?
+    @State private var isLoaded = false
+    
+    private static var cache = NSCache<NSURL, UIImage>()
+    
+    var body: some View {
+        ZStack {
+            if let image = image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .transition(.scale)
+            } else {
+                Text(fallbackInitial())
+                    .font(.system(size: size.rawValue / 2, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(width: size.rawValue, height: size.rawValue)
+                    .background(Color.gray)
+            }
+        }
+        .frame(width: size.rawValue, height: size.rawValue)
+        .clipShape(Circle())
+        .onAppear {
+            loadImage()
+        }
     }
-
-    // MARK: - Setup UI
-    private func setupUI() {
-        layer.cornerRadius = size / 2
-        clipsToBounds = true
-        translatesAutoresizingMaskIntoConstraints = false
-
-        initialsLabel.font = UIFont.systemFont(ofSize: size / 2, weight: .medium)
-
-        addSubview(imageView)
-        addSubview(initialsLabel)
-
-        NSLayoutConstraint.activate([
-            widthAnchor.constraint(equalToConstant: size),
-            heightAnchor.constraint(equalToConstant: size),
-
-            imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-
-            initialsLabel.topAnchor.constraint(equalTo: topAnchor),
-            initialsLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
-            initialsLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            initialsLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
-        ])
+    
+    private func fallbackInitial() -> String {
+        guard let name = user.fullName else { return String() }
+        return name.first.map { String($0).uppercased() } ?? String()
     }
-
-    // MARK: - Load Image
+    
     private func loadImage() {
-        guard let url = imageURL else {
-            showFallbackInitial()
+        guard let url = user.avatar else { return }
+        
+        if let cached = AvatarView.cache.object(forKey: url as NSURL) {
+            self.image = cached
             return
         }
-
-        if let cached = AvatarView.imageCache.object(forKey: url as NSURL) {
-            imageView.image = cached
-            initialsLabel.isHidden = true
-            return
-        }
-
+        
         let request = ImageRequest(
             url: url,
-            processors: [ImageProcessors.Resize(size: CGSize(width: size * 2, height: size * 2))],
-            priority: .high
+            processors: [ImageProcessors.Resize(size: CGSize(width: size.rawValue * 2, height: size.rawValue * 2))]
         )
-
+        
         Task {
             do {
-                let image = try await ImagePipeline.shared.image(for: request)
-                AvatarView.imageCache.setObject(image, forKey: url as NSURL)
-                imageView.alpha = 0
-                imageView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-                imageView.image = image
-                initialsLabel.isHidden = true
-
-                UIView.animate(withDuration: 0.25) {
-                    self.imageView.alpha = 1
-                    self.imageView.transform = .identity
+                let img = try await ImagePipeline.shared.image(for: request)
+                AvatarView.cache.setObject(img, forKey: url as NSURL)
+                await MainActor.run {
+                    withAnimation(.easeIn(duration: 0.25)) {
+                        self.image = img
+                        self.isLoaded = true
+                    }
                 }
             } catch {
-                showFallbackInitial()
+                
             }
         }
     }
-
-    // MARK: - Fallback (Initial)
-    private func showFallbackInitial() {
-        imageView.image = nil
-        initialsLabel.isHidden = false
-        initialsLabel.text = fallbackInitial
-    }
 }
+

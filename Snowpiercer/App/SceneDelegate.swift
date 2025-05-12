@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import SwiftagramCrypto
-import Swiftagram
+import SwiftUI
+
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -16,16 +16,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
+        let loginView = AccounstHomeView(
+            viewModel: LoginViewModel(
+                service: InstagramService(),
+                userService: UserService()
+            )
+        )
+       // window?.rootViewController = UIHostingController(rootView: loginView)
         let window = UIWindow(windowScene: windowScene)
-        let instagramService = InstagramService()
-        let userService = UserService()
-        let loginViewModel = LoginViewModel(service: instagramService, userService: userService)
-        let loginVC = LoginViewController(viewModel: loginViewModel)
-        let navVC = UINavigationController(rootViewController: loginVC)
-        window.rootViewController = navVC
+        window.rootViewController = UIHostingController(rootView: loginView)
         window.makeKeyAndVisible()
         self.window = window
+        //        let window = UIWindow(windowScene: windowScene)
+        //        let instagramService = InstagramService()
+        //        let userService = UserService()
+        //        let loginViewModel = LoginViewModel(service: instagramService, userService: userService)
+        //        let loginVC = LoginViewController(viewModel: loginViewModel)
+        //        let navVC = UINavigationController(rootViewController: loginVC)
+        //        window.rootViewController = navVC
+        //        window.makeKeyAndVisible()
+        //        self.window = window
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -6,11 +6,12 @@
 //
 import UIKit
 import Swiftagram
-import SwiftagramCrypto
 import Combine
+import SwiftUI
 
-class InstagramLoginViewController: UIViewController {
+class LoginViewController: UIViewController {
     private var bin = Set<AnyCancellable>()
+    
     func authenticate() async throws -> Secret {
         return try await withCheckedThrowingContinuation { continuation in
             Authenticator.keychain
@@ -29,4 +30,26 @@ class InstagramLoginViewController: UIViewController {
                 .store(in: &self.bin)
         }
     }
+}
+
+struct LoginSheet: UIViewControllerRepresentable {
+    let completion: (Result<Secret, Error>) -> Void
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let placeholder = UIViewController()
+        DispatchQueue.main.async {
+            Task {
+                do {
+                    let loginVC = LoginViewController()
+                    let secret = try await loginVC.authenticate()
+                    completion(.success(secret))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+        return placeholder
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
