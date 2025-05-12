@@ -6,22 +6,36 @@
 //
 
 import Swiftagram
+import UIKit
 
 struct MockSavedAccount {
     static var preview: SavedAccount {
         let user = InstagramUser(
-            username: "gersonvieira",
-            fullName: "Gerson Vieira",
+            username: "mockuser",
+            fullName: "Mock User",
             profilePicURL: nil,
             avatar: nil
         )
 
-        struct FakeSecret: Equatable {
-            let identifier = "123"
+        let cookieProps: [HTTPCookiePropertyKey: Any] = [
+            .domain: "instagram.com",
+            .path: "/",
+            .name: "sessionid",
+            .value: "mock_session_id",
+            .secure: true,
+            .expires: Date().addingTimeInterval(60 * 60 * 24 * 365)
+        ]
+
+        guard let cookie = HTTPCookie(properties: cookieProps) else {
+            print("❌ ERRO: não conseguiu criar cookie")
+            return SavedAccount(secret: Secret(cookies: [])!, user: user)
         }
 
-        let fakeSecret = unsafeBitCast(FakeSecret(), to: Secret.self)
-        
-        return SavedAccount(secret: fakeSecret, user: user)
+        guard let secret = Secret(cookies: [cookie]) else {
+            print("❌ ERRO: não conseguiu criar Secret")
+            return SavedAccount(secret: Secret(cookies: [])!, user: user)
+        }
+
+        return SavedAccount(secret: secret, user: user)
     }
 }
