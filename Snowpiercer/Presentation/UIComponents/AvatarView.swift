@@ -11,14 +11,19 @@ struct AvatarView: View {
     let size: switchSize
     let user: InstagramUser
     
+    @StateObject var viewModel: AvatarViewModel
     @State private var image: UIImage?
-    @State private var isLoaded = false
     
-    private static var cache = NSCache<NSURL, UIImage>()
+    init(size: switchSize, user: InstagramUser) {
+           self.size = size
+           self.user = user
+           _viewModel = StateObject(wrappedValue: AvatarViewModel(url: user.avatar,
+                                                                  size: CGSize(width: size.rawValue * 2, height: size.rawValue * 2)))
+    }
     
     var body: some View {
         ZStack {
-            if let image = image {
+            if let image = viewModel.image  {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
@@ -33,43 +38,14 @@ struct AvatarView: View {
         }
         .frame(width: size.rawValue, height: size.rawValue)
         .clipShape(Circle())
-        .onAppear {
-            loadImage()
+        .task {
+            await viewModel.load()
         }
     }
     
     private func fallbackInitial() -> String {
         guard let name = user.fullName else { return String() }
         return name.first.map { String($0).uppercased() } ?? String()
-    }
-    
-    private func loadImage() {
-        guard let url = user.avatar else { return }
-        
-        if let cached = AvatarView.cache.object(forKey: url as NSURL) {
-            self.image = cached
-            return
-        }
-        
-        let request = ImageRequest(
-            url: url,
-            processors: [ImageProcessors.Resize(size: CGSize(width: size.rawValue * 2, height: size.rawValue * 2))]
-        )
-        
-        Task {
-            do {
-                let img = try await ImagePipeline.shared.image(for: request)
-                AvatarView.cache.setObject(img, forKey: url as NSURL)
-                await MainActor.run {
-                    withAnimation(.easeIn(duration: 0.25)) {
-                        self.image = img
-                        self.isLoaded = true
-                    }
-                }
-            } catch {
-                
-            }
-        }
     }
 }
 

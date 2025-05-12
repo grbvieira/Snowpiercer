@@ -10,28 +10,24 @@ import Swiftagram
 
 @MainActor
 final class UnfollowersViewModel: ObservableObject {
-    
-    @Published private(set) var nonFollowers: [InstagramUser] = []
-    @Published private(set) var isLoading: Bool = false
-    @Published private(set) var errorMessage: String?
-    
-    private let useCase: FetchNonFollowersUseCase
-    
-    init(useCase: FetchNonFollowersUseCase) {
+    @Published var nonFollowers: [InstagramUser] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+
+    let useCase: FetchNonFollowersUseCaseProtocol
+
+    init(useCase: FetchNonFollowersUseCaseProtocol) {
         self.useCase = useCase
     }
-    
-    func fetchNonFollowers(secret: Secret) {
-        Task {
-            isLoading = true
-            defer { isLoading = false }
-            
-            do {
-                nonFollowers = try await useCase.execute(secret: secret)
-            } catch {
-                errorMessage = "Failed to fetch users: \(error.localizedDescription)"
-                nonFollowers = []
-            }
+
+    func fetchNonFollowers(secret: Secret) async {
+        isLoading = true
+        do {
+            let result = try await useCase.execute(secret: secret)
+            nonFollowers = result
+        } catch {
+            errorMessage = error.localizedDescription
         }
+        isLoading = false
     }
 }

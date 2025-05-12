@@ -7,7 +7,7 @@
 import Swiftagram
 import Foundation
 
-struct FetchNonFollowersUseCase {
+struct FetchNonFollowersUseCase: FetchNonFollowersUseCaseProtocol {
     let service: InstagramServiceProtocol
 
     func execute(secret: Secret) async throws -> [InstagramUser] {
