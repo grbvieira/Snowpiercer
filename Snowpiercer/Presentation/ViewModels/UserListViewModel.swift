@@ -17,7 +17,7 @@ final class UserListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    init(type: UserListType, useCase: InstagramUserFetchUseCaseProtocol) {
+    init(type: UserSectionCard, useCase: UserListViewModelUseCaseProtocol) {
         self.type = type
         self.useCase = useCase
     }
@@ -32,7 +32,7 @@ final class UserListViewModel: ObservableObject {
             case .following:
                 users = try await useCase.executeFollowing(secret: secret)
             case .unfollowers:
-                users = try await useCase.executeNonFolloers(secret: secret)
+                users = try await useCase.executeNonFollowers(secret: secret)
             }
         } catch {
             errorMessage = error.localizedDescription

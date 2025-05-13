@@ -10,8 +10,6 @@ import SwiftUI
 struct UserListView: View {
     
     let user: SavedAccount
-    private var title: String
-    let type: UserSectionCard
     
     @StateObject var viewModel: UserListViewModel
     
@@ -43,7 +41,7 @@ struct UserListView: View {
                 }
             }
             .padding(.horizontal)
-            .navigationTitle(title)
+            .navigationTitle(viewModel.type.title)
             .task {
                 await viewModel.fetch(secret: user.secret)
             }
