@@ -12,7 +12,7 @@ struct ProfileRowView: View {
     
     var body: some View {
         HStack(spacing: 4) {
-            AvatarView(size: .max,
+            AvatarView(size: .mid,
                        user: user)
             
             VStack(alignment: .leading, spacing: 4) {

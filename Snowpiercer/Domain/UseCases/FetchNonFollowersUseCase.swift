@@ -7,14 +7,22 @@
 import Swiftagram
 import Foundation
 
-struct FetchNonFollowersUseCase: FetchNonFollowersUseCaseProtocol {
+struct UserListViewModelUseCase: UserListViewModelUseCaseProtocol {
     let service: InstagramServiceProtocol
-
-    func execute(secret: Secret) async throws -> [InstagramUser] {
+    
+    func executeNonFollowers(secret: Secret) async throws -> [InstagramUser] {
         let following = try await service.fetchFollowing(secret: secret)
         let followers = try await service.fetchFollowers(secret: secret)
-
+        
         let followersSet = Set(followers.map { $0.username })
         return following.filter { !followersSet.contains($0.username) }
+    }
+    
+    func executeFollowers(secret: Secret) async throws -> [InstagramUser] {
+        try await service.fetchFollowers(secret: secret)
+    }
+    
+    func executeFollowing(secret: Secret) async throws -> [InstagramUser] {
+        try await service.fetchFollowing(secret: secret)
     }
 }

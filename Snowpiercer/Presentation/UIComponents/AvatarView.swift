@@ -4,7 +4,8 @@ import Nuke
 struct AvatarView: View {
     
     enum switchSize: CGFloat {
-        case max = 60
+        case max = 90
+        case mid = 60
         case min = 30
     }
     

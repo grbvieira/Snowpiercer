@@ -39,7 +39,7 @@ struct FollowButton: View {
                     }
             )
             
-            Button(action: action) {
+          /*  Button(action: action) {
                 Text("Unfollow")
                     .font(.subheadline.bold())
                     .padding(.vertical, 6)
@@ -49,7 +49,7 @@ struct FollowButton: View {
                     .clipShape(Capsule())
                     .scaleEffect(isPressed ? 0.95 : 1.0)
                     .opacity(isPressed ? 0.8 : 1.0)
-            }
+            }*/
 
         }
     }

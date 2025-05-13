@@ -76,8 +76,8 @@ struct AccounstHomeView: View {
                 set: { if !$0 { viewModel.selectedAccount = nil } }
             )) {
                 if let account = viewModel.selectedAccount {
-                    let viewModel = UnfollowersViewModel(useCase: FetchNonFollowersUseCase(service: InstagramService()))
-                    NonFollowersView(user: account, viewModel: viewModel)
+                   /// let viewModel = UnfollowersViewModel(useCase: FetchNonFollowersUseCase(service: InstagramService()))
+                    UserDashboardView(account: account)
                 }
             }
         }
