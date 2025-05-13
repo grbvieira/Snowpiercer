@@ -7,10 +7,13 @@
 
 import SwiftUI
 
-struct NonFollowersView: View {
+struct UserListView: View {
     
     let user: SavedAccount
-    @StateObject var viewModel: UnfollowersViewModel
+    private var title: String
+    let type: UserSectionCard
+    
+    @StateObject var viewModel: UserListViewModel
     
     var body: some View {
         
@@ -23,7 +26,7 @@ struct NonFollowersView: View {
         
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.nonFollowers, id: \.username) { user in
+                ForEach(viewModel.users, id: \.username) { user in
                     HStack {
                         ProfileRowView(user: user)
                         
@@ -40,9 +43,9 @@ struct NonFollowersView: View {
                 }
             }
             .padding(.horizontal)
-            .navigationTitle("Quem não te segue")
+            .navigationTitle(title)
             .task {
-                await viewModel.fetchNonFollowers(secret: user.secret)
+                await viewModel.fetch(secret: user.secret)
             }
             .overlay {
                 if viewModel.isLoading {
