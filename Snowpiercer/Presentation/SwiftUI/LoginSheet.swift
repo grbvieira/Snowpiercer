@@ -37,17 +37,23 @@ struct LoginSheet: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UIViewController {
         let placeholder = UIViewController()
+        
         DispatchQueue.main.async {
-            Task {
-                do {
-                    let loginVC = LoginViewController()
-                    let secret = try await loginVC.authenticate()
-                    completion(.success(secret))
-                } catch {
-                    completion(.failure(error))
+            let loginVC = LoginViewController()
+            placeholder.present(loginVC, animated: true) {
+                Task {
+                    do {
+                        let secret = try await loginVC.authenticate()
+                        placeholder.dismiss(animated: true)
+                        completion(.success(secret))
+                    } catch {
+                        placeholder.dismiss(animated: true)
+                        completion(.failure(error))
+                    }
                 }
             }
         }
+        
         return placeholder
     }
 
