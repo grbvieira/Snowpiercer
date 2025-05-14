@@ -10,7 +10,18 @@ import Swiftagram
 import UIKit
 
 class UserService: UserServiceProtocol {
-    private var bin: Set<AnyCancellable> = []  
+    
+    //MARK: Remove usuario do keychain e do cache local
+    func deleteUser(secret: Swiftagram.Secret) {
+        do {
+            try Authenticator.keychain.secret(secret.identifier).delete()
+            AccountStorage.shared.delete(for: secret.identifier)
+        } catch {
+            print("Erro ao remover secret do Keychain: \(error)")
+        }
+    }
+    
+    //MARK: Pega as informações do usuario salvo no keychain
     func fetchUserInfo(secret: Swiftagram.Secret) async throws -> InstagramUser {
         return try await withCheckedThrowingContinuation { continuation in
             Endpoint.user(secret.identifier)
@@ -18,12 +29,20 @@ class UserService: UserServiceProtocol {
                 .unlock(with: secret)
                 .session(.instagram)
                 .compactMap(\.user)
-                .sink(receiveCompletion: { _ in },
-                      receiveValue: { user in
-                    let account = InstagramUserDTO(from: user)
-                    continuation.resume(returning: account.toDomain())
-                })
+                .sink(
+                    receiveCompletion: { completion in
+                        if case let .failure(error) = completion {
+                            continuation.resume(throwing: error)
+                        }
+                    },
+                    receiveValue: { user in
+                        let account = InstagramUserDTO(from: user)
+                        continuation.resume(returning: account.toDomain())
+                    }
+                )
                 .store(in: &self.bin)
         }
     }
+    
+    private var bin: Set<AnyCancellable> = []
 }

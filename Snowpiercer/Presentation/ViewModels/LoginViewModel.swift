@@ -12,17 +12,15 @@ import Swiftagram
 
 @MainActor
 final class LoginViewModel: ObservableObject {
-    let service: InstagramServiceProtocol
-    let userService: UserServiceProtocol
+    let usecase: FetchUserAfterLoginUseCase
     
     @Published var savedAccounts: [SavedAccount] = []
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
     @Published var selectedAccount: SavedAccount?
     
-    init(service: InstagramServiceProtocol, userService: UserServiceProtocol) {
-        self.service = service
-        self.userService = userService
+    init(useCase: FetchUserAfterLoginUseCase) {
+        self.usecase = useCase
     }
     
     func loadSavedAccounts() {
@@ -35,11 +33,16 @@ final class LoginViewModel: ObservableObject {
                 var accounts: [SavedAccount] = []
                 
                 for secret in secrets {
-                    do {
-                        let user = try await userService.fetchUserInfo(secret: secret)
-                        accounts.append(SavedAccount(secret: secret, user: user))
-                    } catch {
-                        print("Erro ao buscar usuário para \(secret.identifier): \(error)")
+                    if let cachedUser = AccountStorage.shared.load(for: secret.identifier) {
+                        accounts.append(SavedAccount(secret: secret, user: cachedUser))
+                    } else {
+                        do {
+                            let user = try await usecase.execute(secret: secret).user
+                            AccountStorage.shared.save(user, for: secret.identifier)
+                            accounts.append(SavedAccount(secret: secret, user: user))
+                        } catch {
+                            print("Erro ao buscar usuário para \(secret.identifier): \(error)")
+                        }
                     }
                 }
                 savedAccounts = accounts
@@ -52,5 +55,9 @@ final class LoginViewModel: ObservableObject {
     
     func select(account: SavedAccount) {
         selectedAccount = account
+    }
+    
+    func delete(account: SavedAccount) {
+        usecase.delete(secret: account.secret)
     }
 }

@@ -32,12 +32,3 @@ struct ProfileRowView: View {
         .padding(.vertical, 8)
     }
 }
-
-struct ProfileRowView_Preview: PreviewProvider {
-    static var previews: some View {
-        ProfileRowView(user: InstagramUser(username: "noosreg",
-                                           fullName: "Gerson",
-                                           profilePicURL: nil,
-                                           avatar: nil))
-    }
-}

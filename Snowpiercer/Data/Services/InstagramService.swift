@@ -14,7 +14,7 @@ class InstagramService: InstagramServiceProtocol {
     private var bin = Set<AnyCancellable>()
     
     func fetchFollowers(secret: Secret) async throws -> [InstagramUser] {
-        try await fetchUsers(for: secret, isFollowers: true)
+        return try await fetchUsers(for: secret, isFollowers: true)
     }
     
     func fetchFollowing(secret: Secret) async throws -> [InstagramUser] {

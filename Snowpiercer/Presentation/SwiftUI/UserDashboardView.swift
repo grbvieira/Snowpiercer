@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct UserDashboardView: View {
+    
     let account: SavedAccount
     @State private var selectedTab: UserSectionCard?
+    @ObservedObject var viewModel: UserListViewModel
     
     private let gridItems = [
         GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12),
@@ -48,15 +50,21 @@ struct UserDashboardView: View {
             }
         }
         .navigationTitle("Visão Geral")
+        .overlay {
+            if viewModel.isLoading {
+                ProgressView("Carregando...")
+                    .progressViewStyle(CircularProgressViewStyle())
+            }
+        }
+        .task {
+            viewModel.loadCachedLists()
+            await viewModel.loadAllData(secret: account.secret)
+        }
     }
     
     @ViewBuilder
     private func destinationView(for item: UserSectionCard) -> some View {
-        let service = InstagramService()
-        let userCase = UserListViewModelUseCase(service: service)
-        let viewModel = UserListViewModel(type: item,
-                                          useCase: userCase)
-        UserListView(user: account,
+        UserListView(type: item,
                      viewModel: viewModel)
     }
 }

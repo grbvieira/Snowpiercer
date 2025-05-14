@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UserListView: View {
     
-    let user: SavedAccount
+    let type: UserSectionCard
     
     @StateObject var viewModel: UserListViewModel
     
@@ -24,7 +24,7 @@ struct UserListView: View {
         
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.users, id: \.username) { user in
+                ForEach(viewModel.getList(type: type), id: \.username) { user in
                     HStack {
                         ProfileRowView(user: user)
                         
@@ -41,10 +41,7 @@ struct UserListView: View {
                 }
             }
             .padding(.horizontal)
-            .navigationTitle(viewModel.type.title)
-            .task {
-                await viewModel.fetch(secret: user.secret)
-            }
+            .navigationTitle(type.title)
             .overlay {
                 if viewModel.isLoading {
                     ProgressView("Carregando...")

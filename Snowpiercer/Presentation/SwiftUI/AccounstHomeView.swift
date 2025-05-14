@@ -26,6 +26,14 @@ struct AccounstHomeView: View {
                         } label: {
                             ProfileRowView(user: account.user)
                         }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                viewModel.delete(account: account)
+                            } label: {
+                                Label("Excluir", systemImage: "trash")
+                            }
+                        }
+                        
                     }
                     .listStyle(.sidebar)
                 }
@@ -44,6 +52,8 @@ struct AccounstHomeView: View {
                 }
                 .padding(.bottom)
             }
+            .toolbarTitleDisplayMode(.inlineLarge)
+            .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Contas Salvas")
             .onAppear {
                 viewModel.loadSavedAccounts()
@@ -59,8 +69,7 @@ struct AccounstHomeView: View {
                     case .success(let secret):
                         Task {
                             do {
-                                let useCase = FetchUserAfterLoginUseCase(userService: viewModel.userService)
-                                let account = try await useCase.execute(secret: secret)
+                                let account = try await viewModel.usecase.execute(secret: secret)
                                 viewModel.savedAccounts.append(account)
                             } catch {
                                 viewModel.errorMessage = "Erro ao buscar dados da conta."
@@ -76,8 +85,10 @@ struct AccounstHomeView: View {
                 set: { if !$0 { viewModel.selectedAccount = nil } }
             )) {
                 if let account = viewModel.selectedAccount {
-                   /// let viewModel = UnfollowersViewModel(useCase: FetchNonFollowersUseCase(service: InstagramService()))
-                    UserDashboardView(account: account)
+                    let service = InstagramService()
+                    let useCase = UserListViewModelUseCase(service: service)
+                    let viewModel = UserListViewModel(useCase: useCase)
+                    UserDashboardView(account: account, viewModel: viewModel)
                 }
             }
         }

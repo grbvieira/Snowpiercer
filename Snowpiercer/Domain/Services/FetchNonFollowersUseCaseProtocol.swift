@@ -7,7 +7,7 @@
 import Swiftagram
 
 protocol UserListViewModelUseCaseProtocol {
-    func executeNonFollowers(secret: Secret) async throws -> [InstagramUser]
+    func executeNonFollowers(followers: [InstagramUser], following: [InstagramUser]) -> [InstagramUser]
     func executeFollowers(secret: Secret) async throws -> [InstagramUser]
     func executeFollowing(secret: Secret) async throws -> [InstagramUser]
 }

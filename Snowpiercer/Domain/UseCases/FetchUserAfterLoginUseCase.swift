@@ -15,4 +15,8 @@ struct FetchUserAfterLoginUseCase {
         let user = try await userService.fetchUserInfo(secret: secret)
         return SavedAccount(secret: secret, user: user)
     }
+    
+    func delete(secret: Secret) {
+        userService.deleteUser(secret: secret)
+    }
 }

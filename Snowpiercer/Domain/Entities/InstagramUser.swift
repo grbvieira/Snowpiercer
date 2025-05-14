@@ -7,7 +7,7 @@
 import UIKit
 
 // MARK: - Models
-struct InstagramUser: Hashable {
+struct InstagramUser: Hashable, Codable {
     let username: String
     let fullName: String?
     let profilePicURL: URL?

@@ -7,8 +7,8 @@
 
 import Swiftagram
 import UIKit
-
-struct MockSavedAccount {
+/// Acho que isso não é mais necessario
+/*struct MockSavedAccount {
     static var preview: SavedAccount {
         let user = InstagramUser(
             username: "mockuser",
@@ -39,3 +39,4 @@ struct MockSavedAccount {
         return SavedAccount(secret: secret, user: user)
     }
 }
+*/
