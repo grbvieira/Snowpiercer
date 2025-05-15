@@ -14,7 +14,7 @@ final class UserListViewModel: ObservableObject {
     
     let useCase: UserListViewModelUseCaseProtocol
     private(set) var loggedUserSecret: Secret!
-    
+
     //MARK: - Lista de usuarios
     @Published var followers: [InstagramUser] = []
     @Published var following: [InstagramUser] = []
@@ -54,16 +54,16 @@ final class UserListViewModel: ObservableObject {
             .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
             .map { [weak self] (text, type) -> [InstagramUser] in
                 guard let self = self else { return [] }
-
+                
                 let list: [InstagramUser]
                 switch type {
                 case .followers: list = self.followers
                 case .following: list = self.following
                 case .unfollowers: list = self.nonFollowers
                 }
-
+                
                 guard !text.isEmpty else { return list }
-
+                
                 let lowercasedText = text.lowercased()
                 return list.filter {
                     $0.username.lowercased().contains(lowercasedText) ||

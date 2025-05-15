@@ -8,63 +8,89 @@
 import SwiftUI
 
 struct UserDashboardView: View {
-    
     let account: SavedAccount
     @State private var selectedTab: UserSectionCard?
     @ObservedObject var viewModel: UserListViewModel
-    
+    @Environment(\.dismiss) private var dismiss
+
     private let gridItems = [
         GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12),
         GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12)
     ]
-    
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                VStack(spacing: 8) {
-                    AvatarView(size: .max,
-                               user: account.user)
-                    .padding(.top, 32)
-                    
-                    if let fullName = account.user.fullName {
-                        Text(fullName)
-                            .font(.title2.bold())
+        ZStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    VStack(spacing: 8) {
+                        AvatarView(size: .max,
+                                   user: account.user)
+                            .padding(.top, 32)
+
+                        if let fullName = account.user.fullName {
+                            Text(fullName)
+                                .font(.title2.bold())
+                        }
+
+                        Text("@\(account.user.username)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                    
-                    Text("@\(account.user.username)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                
-                LazyVGrid(columns: gridItems, spacing: 16) {
-                    ForEach(UserSectionCard.allCases, id: \ .self) { item in
-                        NavigationLink {
-                            destinationView(for: item)
-                        } label: {
-                            DashboardCard(title: item.title, icon: item.icon)
+
+                    LazyVGrid(columns: gridItems, spacing: 16) {
+                        ForEach(UserSectionCard.allCases, id: \ .self) { item in
+                            NavigationLink {
+                                destinationView(for: item)
+                            } label: {
+                                DashboardCard(title: item.title, icon: item.icon)
+                            }
                         }
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 24)
                 }
-                .padding(.horizontal)
-                .padding(.top, 24)
+            }
+            .disabled(viewModel.isLoading)
+            .blur(radius: viewModel.isLoading ? 3 : 0)
+
+            if viewModel.isLoading {
+                LoadingOverlayView(progress: viewModel.loadProgress)
             }
         }
         .navigationTitle("Visão Geral")
-        .overlay {
-            if viewModel.isLoading {
-                ProgressView("Carregando...")
-                    .progressViewStyle(CircularProgressViewStyle())
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    Task {
+                        await viewModel.loadAllData(forceReload: true)
+                    }
+                }) {
+                    Image(systemName: "arrow.clockwise")
+                }
             }
         }
+        .alert("Erro", isPresented: .constant(viewModel.errorMessage != nil)) {
+            if let url = viewModel.challengeURL.flatMap(URL.init) {
+                Button("Abrir Instagram") {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("Fechar", role: .cancel) {
+                viewModel.errorMessage = nil
+                dismiss()
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "Erro desconhecido")
+        }
         .task {
-            viewModel.loadCachedLists()
-            await viewModel.loadAllData(secret: account.secret)
+            viewModel.setLoggedUser(account.secret)
+            viewModel.loadCachedLists(secret: account.secret)
+            await viewModel.loadAllData()
         }
     }
-    
+
     @ViewBuilder
     private func destinationView(for item: UserSectionCard) -> some View {
-        UserListView(type: item,
-                     viewModel: viewModel)
+        UserListView(type: item, viewModel: viewModel)
     }
 }
