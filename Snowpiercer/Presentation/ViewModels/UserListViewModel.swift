@@ -13,6 +13,7 @@ import Combine
 final class UserListViewModel: ObservableObject {
     
     let useCase: UserListViewModelUseCaseProtocol
+    private(set) var loggedUserSecret: Secret!
     
     //MARK: - Lista de usuarios
     @Published var followers: [InstagramUser] = []
@@ -41,6 +42,10 @@ final class UserListViewModel: ObservableObject {
     init(useCase: UserListViewModelUseCaseProtocol) {
         self.useCase = useCase
         bindSearch()
+    }
+    
+    func setLoggedUser(_ secret: Secret) {
+        self.loggedUserSecret = secret
     }
     
     // MARK: - Bind para filtro reativo
@@ -119,7 +124,7 @@ final class UserListViewModel: ObservableObject {
         do {
             following = try await useCase.executeFollowing(secret: secret)
             hasLoadedFollowing = true
-            UserListStorage.shared.save(following, type: .following)
+            UserListStorage.shared.save(following, type: .following, userID: secret.identifier)
         } catch {
             handleError(error)
         }
@@ -130,13 +135,13 @@ final class UserListViewModel: ObservableObject {
         do {
             followers = try await useCase.executeFollowers(secret: secret)
             hasLoadedFollowers = true
-            UserListStorage.shared.save(followers, type: .followers)
+            UserListStorage.shared.save(followers, type: .followers, userID: secret.identifier)
         } catch {
             handleError(error)
         }
     }
     // MARK: - Não seguidores
-    private func loadNonFollowers() {
+    private func loadNonFollowers(secret: Secret) {
         /// ## Isso é apenas para teste
         guard hasLoadedFollowers, hasLoadedFollowing else {
             errorMessage = "Carregue seguidores e seguindo antes."
@@ -144,16 +149,16 @@ final class UserListViewModel: ObservableObject {
         }
         do {
             nonFollowers = useCase.executeNonFollowers(followers: followers, following: following)
-            hasLoadedNonFollowers = false
-            UserListStorage.shared.save(nonFollowers, type: .unfollowers)
+            hasLoadedNonFollowers = true
+            UserListStorage.shared.save(nonFollowers, type: .unfollowers, userID: secret.identifier)
         }
     }
     
     // MARK: - Carregar do cache local
-    func loadCachedLists() {
-        followers = UserListStorage.shared.load(type: .followers)
-        following = UserListStorage.shared.load(type: .following)
-        nonFollowers = UserListStorage.shared.load(type: .unfollowers)
+    func loadCachedLists(secret: Secret) {
+        followers = UserListStorage.shared.load(type: .followers, userID: secret.identifier)
+        following = UserListStorage.shared.load(type: .following, userID: secret.identifier)
+        nonFollowers = UserListStorage.shared.load(type: .unfollowers, userID: secret.identifier)
         hasLoadedFollowers = !followers.isEmpty
         hasLoadedFollowing = !following.isEmpty
         hasLoadedNonFollowers = !nonFollowers.isEmpty
