@@ -14,7 +14,7 @@ final class UserListViewModel: ObservableObject {
     
     let useCase: UserListViewModelUseCaseProtocol
     private(set) var loggedUserSecret: Secret!
-
+    
     //MARK: - Lista de usuarios
     @Published var followers: [InstagramUser] = []
     @Published var following: [InstagramUser] = []
@@ -29,8 +29,8 @@ final class UserListViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var loadProgress: Double = 0.0
-    @Published var challengeURL = "https://instagram.com/"
-
+    @Published var challengeURL: String? = nil
+    
     
     // MARK: - Controle de Cache
     private(set) var hasLoadedFollowers = false
@@ -159,6 +159,9 @@ final class UserListViewModel: ObservableObject {
         followers = UserListStorage.shared.load(type: .followers, userID: secret.identifier)
         following = UserListStorage.shared.load(type: .following, userID: secret.identifier)
         nonFollowers = UserListStorage.shared.load(type: .unfollowers, userID: secret.identifier)
+        print("followers: \(followers.count)")
+        print("following: \(following.count)")
+        print("nonFollowers: \(nonFollowers.count)")
         hasLoadedFollowers = !followers.isEmpty
         hasLoadedFollowing = !following.isEmpty
         hasLoadedNonFollowers = !nonFollowers.isEmpty
@@ -171,7 +174,8 @@ final class UserListViewModel: ObservableObject {
            code == "challenge_required" {
             
             let challengeWrapper = response["challenge"]
-            if let challenge = challengeWrapper.dictionary() {
+            if challengeWrapper.dictionary() != nil {
+                self.challengeURL = "https://instagram.com/"
                 self.errorMessage = "Sua conta precisa passar por um desafio de verificação no Instagram. Volte novamente após o desafio"
             }
         } else {

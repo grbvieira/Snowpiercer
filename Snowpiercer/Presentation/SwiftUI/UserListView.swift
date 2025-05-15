@@ -34,8 +34,11 @@ struct UserListView: View {
                 }
                 .padding(.horizontal)
             }
+            .onAppear{
+                viewModel.currentType = type
+            }
             .searchable(text: $viewModel.searchText, prompt: "Username ou nome")
-            .navigationTitle(type.title)
+            .navigationTitle(viewModel.currentType.title)
             .overlay {
                 if viewModel.isLoading {
                     ProgressView("Carregando...")
