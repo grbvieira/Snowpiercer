@@ -69,27 +69,48 @@ final class UserListViewModel: ObservableObject {
     }
     
     // MARK: - Carregar todos os dados com controle de cache
-    func loadAllData(secret: Secret) async {
-        isLoading = true
-        defer { isLoading = false }
+    func loadAllData(forceReload: Bool = false) async {
+        guard let secret = loggedUserSecret else { return }
         
+        isLoading = true
+        loadProgress = 0.0
+        defer {
+            isLoading = false
+            loadProgress = 1.0
+        }
+        
+        if forceReload {
+            self.hasLoadedFollowers = false
+            self.hasLoadedFollowing = false
+            self.hasLoadedNonFollowers = false
+            UserListStorage.shared.clearAll(for: secret.identifier)
+        }
         
         async let followersTask: Void = {
             if await !hasLoadedFollowers {
                 await loadFollowers(secret: secret)
+                await MainActor.run {
+                    self.loadProgress += 0.33
+                }
             }
         }()
         
         async let followingTask: Void = {
             if await !hasLoadedFollowing {
                 await loadFollowing(secret: secret)
+                await MainActor.run {
+                    self.loadProgress += 0.33
+                }
             }
         }()
         
         _ = await (followersTask, followingTask)
         
         if !hasLoadedNonFollowers, hasLoadedFollowers, hasLoadedFollowing {
-            loadNonFollowers()
+            loadNonFollowers(secret: secret)
+            await MainActor.run {
+                self.loadProgress += 0.34
+            }
         }
     }
     
