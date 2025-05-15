@@ -7,6 +7,7 @@
 
 import UIKit
 import Swiftagram
+import Combine
 
 @MainActor
 final class UserListViewModel: ObservableObject {
@@ -18,6 +19,12 @@ final class UserListViewModel: ObservableObject {
     @Published var following: [InstagramUser] = []
     @Published var nonFollowers: [InstagramUser] = []
     
+    // MARK: - Filtro
+    @Published var searchText: String = ""
+    @Published var currentType: UserSectionCard = .followers
+    @Published private(set) var filteredUsers: [InstagramUser] = []
+    
+    // MARK: - Estado
     @Published var isLoading = false
     @Published var errorMessage: String?
     
@@ -26,17 +33,36 @@ final class UserListViewModel: ObservableObject {
     private(set) var hasLoadedFollowing = false
     private(set) var hasLoadedNonFollowers = false
     
+    private var cancellables = Set<AnyCancellable>()
+    
     init(useCase: UserListViewModelUseCaseProtocol) {
         self.useCase = useCase
+        bindSearch()
     }
     
-    // MARK: - Retornar Lista
-    func getList(type: UserSectionCard) -> [InstagramUser]{
-        switch type {
-        case .followers: return followers
-        case .following:  return following
-        case .unfollowers: return nonFollowers
-        }
+    // MARK: - Bind para filtro reativo
+    private func bindSearch() {
+        Publishers.CombineLatest($searchText, $currentType)
+            .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
+            .map { [weak self] (text, type) -> [InstagramUser] in
+                guard let self = self else { return [] }
+
+                let list: [InstagramUser]
+                switch type {
+                case .followers: list = self.followers
+                case .following: list = self.following
+                case .unfollowers: list = self.nonFollowers
+                }
+
+                guard !text.isEmpty else { return list }
+
+                let lowercasedText = text.lowercased()
+                return list.filter {
+                    $0.username.lowercased().contains(lowercasedText) ||
+                    ($0.fullName?.lowercased().contains(lowercasedText) ?? false)
+                }
+            }
+            .assign(to: &$filteredUsers)
     }
     
     // MARK: - Carregar todos os dados com controle de cache

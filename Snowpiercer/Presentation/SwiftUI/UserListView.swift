@@ -15,16 +15,9 @@ struct UserListView: View {
     
     var body: some View {
         
-        VStack(alignment: .leading) {
-            SearchBarView(placeholder: "Username ou nome") {
-                /// Fazer busca
-            }
-        }
-        .padding(.horizontal)
-        
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.getList(type: type), id: \.username) { user in
+                ForEach(viewModel.filteredUsers, id: \.username) { user in
                     HStack {
                         ProfileRowView(user: user)
                         
@@ -39,8 +32,9 @@ struct UserListView: View {
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(12)
                 }
+                .padding(.horizontal)
             }
-            .padding(.horizontal)
+            .searchable(text: $viewModel.searchText, prompt: "Username ou nome")
             .navigationTitle(type.title)
             .overlay {
                 if viewModel.isLoading {
