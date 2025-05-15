@@ -27,6 +27,9 @@ final class UserListViewModel: ObservableObject {
     // MARK: - Estado
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var loadProgress: Double = 0.0
+    @Published var challengeURL = "https://instagram.com/"
+
     
     // MARK: - Controle de Cache
     private(set) var hasLoadedFollowers = false
@@ -97,7 +100,7 @@ final class UserListViewModel: ObservableObject {
             hasLoadedFollowing = true
             UserListStorage.shared.save(following, type: .following)
         } catch {
-            errorMessage = "Erro ao carregar seguindo: \(error.localizedDescription)"
+            handleError(error)
         }
     }
     
@@ -108,7 +111,7 @@ final class UserListViewModel: ObservableObject {
             hasLoadedFollowers = true
             UserListStorage.shared.save(followers, type: .followers)
         } catch {
-            errorMessage = "Erro ao carregar seguindo: \(error.localizedDescription)"
+            handleError(error)
         }
     }
     // MARK: - Não seguidores
@@ -133,5 +136,20 @@ final class UserListViewModel: ObservableObject {
         hasLoadedFollowers = !followers.isEmpty
         hasLoadedFollowing = !following.isEmpty
         hasLoadedNonFollowers = !nonFollowers.isEmpty
+    }
+    
+    //MARK: - Tratamento de erro genérico
+    private func handleError(_ error: Error) {
+        if let specializedError = error as? SpecializedError,
+           case let .generic(code, response) = specializedError,
+           code == "challenge_required" {
+            
+            let challengeWrapper = response["challenge"]
+            if let challenge = challengeWrapper.dictionary() {
+                self.errorMessage = "Sua conta precisa passar por um desafio de verificação no Instagram. Volte novamente após o desafio"
+            }
+        } else {
+            self.errorMessage = "Erro: \(error.localizedDescription)"
+        }
     }
 }
