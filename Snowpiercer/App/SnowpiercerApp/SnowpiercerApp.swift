@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-
+@main
 struct SnowpiercerApp: App {
     var body: some Scene {
         WindowGroup {
