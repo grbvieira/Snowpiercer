@@ -11,7 +11,7 @@ struct ProfileRowView: View {
     let user: InstagramUser
     
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 8) {
             AvatarView(size: .mid,
                        user: user)
             
