@@ -16,10 +16,19 @@ struct ProfileRowView: View {
                        user: user)
             
             VStack(alignment: .leading, spacing: 4) {
-                if let name = user.fullName {
-                    Text(name)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
+                HStack(spacing: 4) {
+                    if let name = user.fullName {
+                        Text(name)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                    }
+                        Spacer()
+                    /// Refatorae
+                    if user.access.contains(.private) {
+                        Image(systemName: "lock")
+                    } else {
+                        Image(systemName: "lock.open")
+                    }
                 }
                 Text("@\(user.username)")
                     .font(.subheadline)

@@ -59,5 +59,27 @@ final class LoginViewModel: ObservableObject {
     
     func delete(account: SavedAccount) {
         usecase.delete(secret: account.secret)
+        savedAccounts.removeAll { $0.secret.identifier == account.secret.identifier }
+    }
+}
+
+extension LoginViewModel {
+    func handleLoginResult(_ result: Result<Secret, Error>) {
+        switch result {
+        case .success(let secret):
+            Task {
+                do {
+                    let account = try await usecase.execute(secret: secret)
+                    if !savedAccounts.contains(where: { $0.secret.identifier == account.secret.identifier }) {
+                        savedAccounts.append(SavedAccount(secret: secret, user: account.user))
+                        AccountStorage.shared.save(account.user, for: secret.identifier)
+                    }
+                } catch {
+                    errorMessage = "Erro ao buscar dados da conta."
+                }
+            }
+        case.failure(let error):
+            errorMessage = "Login falhou: \(error.localizedDescription)"
+        }
     }
 }

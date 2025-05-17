@@ -12,159 +12,169 @@ import Combine
 @MainActor
 final class UserListViewModel: ObservableObject {
     
+    // MARK: - Dependencies
     let useCase: UserListViewModelUseCaseProtocol
     private(set) var loggedUserSecret: Secret!
     
-    //MARK: - Lista de usuarios
+    // MARK: - Published Properties (UI state)
+    /// List user
     @Published var followers: [InstagramUser] = []
     @Published var following: [InstagramUser] = []
     @Published var nonFollowers: [InstagramUser] = []
     
-    // MARK: - Filtro
+    /// filter
     @Published var searchText: String = ""
     @Published var currentType: UserSectionCard = .followers
     @Published private(set) var filteredUsers: [InstagramUser] = []
     
-    // MARK: - Estado
+    /// State
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var loadProgress: Double = 0.0
     @Published var challengeURL: String? = nil
     
     
-    // MARK: - Controle de Cache
+    // MARK: - Cache Control
     private(set) var hasLoadedFollowers = false
     private(set) var hasLoadedFollowing = false
     private(set) var hasLoadedNonFollowers = false
     
     private var cancellables = Set<AnyCancellable>()
     
+    // MARK: - Init
     init(useCase: UserListViewModelUseCaseProtocol) {
         self.useCase = useCase
-        bindSearch()
+        setupBindings()
     }
     
+    // MARK: - Public Methods
     func setLoggedUser(_ secret: Secret) {
         self.loggedUserSecret = secret
     }
     
-    // MARK: - Bind para filtro reativo
-    private func bindSearch() {
-        Publishers.CombineLatest($searchText, $currentType)
-            .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
-            .map { [weak self] (text, type) -> [InstagramUser] in
-                guard let self = self else { return [] }
-                
-                let list: [InstagramUser]
-                switch type {
-                case .followers: list = self.followers
-                case .following: list = self.following
-                case .unfollowers: list = self.nonFollowers
-                }
-                
-                guard !text.isEmpty else { return list }
-                
-                let lowercasedText = text.lowercased()
-                return list.filter {
-                    $0.username.lowercased().contains(lowercasedText) ||
-                    ($0.fullName?.lowercased().contains(lowercasedText) ?? false)
-                }
-            }
-            .assign(to: &$filteredUsers)
+    func prepareDashboard(with secret: Secret) async {
+        setLoggedUser(secret)
+        loadCachedLists(secret: secret)
+        await loadAllData()
+    }
+
+    
+    // MARK: - Carregar do cache local
+   private  func loadCachedLists(secret: Secret) {
+        followers = UserListStorage.shared.load(type: .followers, userID: secret.identifier)
+        following = UserListStorage.shared.load(type: .following, userID: secret.identifier)
+        nonFollowers = UserListStorage.shared.load(type: .unfollowers, userID: secret.identifier)
+        
+        hasLoadedFollowers = !followers.isEmpty
+        hasLoadedFollowing = !following.isEmpty
+        hasLoadedNonFollowers = !nonFollowers.isEmpty
     }
     
     // MARK: - Carregar todos os dados com controle de cache
-    func loadAllData(forceReload: Bool = false) async {
+     func loadAllData(forceReload: Bool = false) async {
         guard let secret = loggedUserSecret else { return }
         
         isLoading = true
         loadProgress = 0.0
-        defer {
-            isLoading = false
-            loadProgress = 1.0
-        }
+        errorMessage = nil
+        challengeURL = nil
         
         if forceReload {
-            self.hasLoadedFollowers = false
-            self.hasLoadedFollowing = false
-            self.hasLoadedNonFollowers = false
-            UserListStorage.shared.clearAll(for: secret.identifier)
+            clearCaches(for: secret)
         }
         
-        async let followersTask: Void = {
-            if await !hasLoadedFollowers {
-                await loadFollowers(secret: secret)
-                await MainActor.run {
-                    self.loadProgress += 0.33
-                }
+        await loadFollowersAndFollowing(secret: secret)
+        await loadNonFollowers()
+        
+        isLoading = false
+        loadProgress = 1.0
+    }
+    
+    // MARK: - Bind para filtro reativo
+    
+    private func setupBindings() {
+        Publishers.CombineLatest($searchText, $currentType)
+            .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
+            .map { [weak self] (text, type) in
+                self?.filteredUsers(searchText: text, type: type) ?? []
+            }
+            .assign(to: &$filteredUsers)
+    }
+    
+    private func filteredUsers(searchText: String, type: UserSectionCard) -> [InstagramUser] {
+        let sourceList: [InstagramUser] = {
+            switch type {
+            case .followers: return followers
+            case .following: return following
+            case .unfollowers: return nonFollowers
             }
         }()
         
-        async let followingTask: Void = {
-            if await !hasLoadedFollowing {
-                await loadFollowing(secret: secret)
-                await MainActor.run {
-                    self.loadProgress += 0.33
-                }
-            }
-        }()
+        guard !searchText.isEmpty else { return sourceList }
+        let lowercasedText = searchText.lowercased()
+        return sourceList.filter {
+            $0.username.lowercased().contains(lowercasedText) ||
+            ($0.fullName?.lowercased().contains(lowercasedText) ?? false)
+        }
+    }
+    
+    private func clearCaches(for secret: Secret) {
+        hasLoadedFollowers = false
+        hasLoadedFollowing = false
+        hasLoadedNonFollowers = false
         
+        UserListStorage.shared.clearAll(for: secret.identifier)
+    }
+    
+    private func loadFollowersAndFollowing(secret: Secret) async {
+        async let followersTask: () = loadFollowers(secret: secret)
+        async let followingTask: () = loadFollowing(secret: secret)
         _ = await (followersTask, followingTask)
-        
-        if !hasLoadedNonFollowers, hasLoadedFollowers, hasLoadedFollowing {
-            loadNonFollowers(secret: secret)
-            await MainActor.run {
-                self.loadProgress += 0.34
-            }
-        }
     }
     
     // MARK: - Seguindo
     private func loadFollowing(secret: Secret) async {
-        do {
-            following = try await useCase.executeFollowing(secret: secret)
-            hasLoadedFollowing = true
-            UserListStorage.shared.save(following, type: .following, userID: secret.identifier)
-        } catch {
-            handleError(error)
+        guard !hasLoadedFollowing else { return }
+        
+        await runSafely {
+            self.following = try await self.useCase.executeFollowing(secret: secret)
+            self.hasLoadedFollowing = true
+            UserListStorage.shared.save(self.following, type: .following, userID: secret.identifier)
+            await MainActor.run { self.loadProgress += 0.33 }
         }
+        
     }
     
     // MARK: - Seguidores
     private func loadFollowers(secret: Secret) async {
-        do {
-            followers = try await useCase.executeFollowers(secret: secret)
-            hasLoadedFollowers = true
-            UserListStorage.shared.save(followers, type: .followers, userID: secret.identifier)
-        } catch {
-            handleError(error)
-        }
-    }
-    // MARK: - Não seguidores
-    private func loadNonFollowers(secret: Secret) {
-        /// ## Isso é apenas para teste
-        guard hasLoadedFollowers, hasLoadedFollowing else {
-            errorMessage = "Carregue seguidores e seguindo antes."
-            return
-        }
-        do {
-            nonFollowers = useCase.executeNonFollowers(followers: followers, following: following)
-            hasLoadedNonFollowers = true
-            UserListStorage.shared.save(nonFollowers, type: .unfollowers, userID: secret.identifier)
+        guard !hasLoadedFollowers else { return }
+        
+        await runSafely {
+            self.followers = try await self.useCase.executeFollowers(secret: secret)
+            self.hasLoadedFollowers = true
+            UserListStorage.shared.save(self.followers, type: .followers, userID: secret.identifier)
+            await MainActor.run { self.loadProgress += 0.33 }
         }
     }
     
-    // MARK: - Carregar do cache local
-    func loadCachedLists(secret: Secret) {
-        followers = UserListStorage.shared.load(type: .followers, userID: secret.identifier)
-        following = UserListStorage.shared.load(type: .following, userID: secret.identifier)
-        nonFollowers = UserListStorage.shared.load(type: .unfollowers, userID: secret.identifier)
-        print("followers: \(followers.count)")
-        print("following: \(following.count)")
-        print("nonFollowers: \(nonFollowers.count)")
-        hasLoadedFollowers = !followers.isEmpty
-        hasLoadedFollowing = !following.isEmpty
-        hasLoadedNonFollowers = !nonFollowers.isEmpty
+    // MARK: - Não seguidores
+    private func loadNonFollowers() async {
+        guard !hasLoadedNonFollowers, hasLoadedFollowers, hasLoadedFollowing else { return }
+        
+        nonFollowers = useCase.executeNonFollowers(followers: followers, following: following)
+        hasLoadedNonFollowers = true
+        UserListStorage.shared.save(nonFollowers, type: .unfollowers, userID: loggedUserSecret.identifier)
+        await MainActor.run { loadProgress += 0.34}
+    }
+    
+    private func runSafely(_ operation: @escaping () async throws -> Void) async {
+        do {
+            try await operation()
+        } catch {
+            await MainActor.run {
+                self.handleError(error)
+            }
+        }
     }
     
     //MARK: - Tratamento de erro genérico

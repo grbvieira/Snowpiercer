@@ -18,7 +18,7 @@ struct AvatarView: View {
     init(size: switchSize, user: InstagramUser) {
            self.size = size
            self.user = user
-           _viewModel = StateObject(wrappedValue: AvatarViewModel(url: user.avatar,
+           _viewModel = StateObject(wrappedValue: AvatarViewModel(url: user.profilePicURL,
                                                                   size: CGSize(width: size.rawValue * 2, height: size.rawValue * 2)))
     }
     

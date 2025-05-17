@@ -14,7 +14,7 @@ struct SnowpiercerApp: App {
             let userService = UserService()
             let usecase = FetchUserAfterLoginUseCase(userService: userService)
             let viewModel = LoginViewModel(useCase: usecase)
-            AccounstHomeView(viewModel: viewModel)
+            AccountsHomeView(viewModel: viewModel)
         }
     }
 }

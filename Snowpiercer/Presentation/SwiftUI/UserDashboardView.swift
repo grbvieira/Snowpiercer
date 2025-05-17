@@ -69,7 +69,10 @@ struct UserDashboardView: View {
                 }
             }
         }
-        .alert("Erro", isPresented: .constant(viewModel.errorMessage != nil)) {
+        .alert("Erro", isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        ))  {
             if let url = viewModel.challengeURL.flatMap(URL.init) {
                 Button("Abrir Instagram") {
                     UIApplication.shared.open(url)
@@ -83,9 +86,7 @@ struct UserDashboardView: View {
             Text(viewModel.errorMessage ?? "Erro desconhecido")
         }
         .task {
-            viewModel.setLoggedUser(account.secret)
-            viewModel.loadCachedLists(secret: account.secret)
-            await viewModel.loadAllData()
+            await viewModel.prepareDashboard(with: account.secret)
         }
     }
 

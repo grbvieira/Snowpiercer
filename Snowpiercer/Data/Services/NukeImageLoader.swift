@@ -8,10 +8,11 @@ import Nuke
 import UIKit
 
 final class NukeImageLoader: ImageLoader {
-    private let cache = NSCache<NSURL, UIImage>()
+
+    private static let cache = NSCache<NSURL, UIImage>()
 
     func loadImage(from url: URL, size: CGSize) async throws -> UIImage {
-        if let cached = cache.object(forKey: url as NSURL) {
+        if let cached = Self.cache.object(forKey: url as NSURL) {
             return cached
         }
 
@@ -21,7 +22,8 @@ final class NukeImageLoader: ImageLoader {
         )
 
         let image = try await ImagePipeline.shared.image(for: request)
-        cache.setObject(image, forKey: url as NSURL)
+
+        Self.cache.setObject(image, forKey: url as NSURL)
         return image
     }
 }

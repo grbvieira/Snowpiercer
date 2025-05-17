@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AccounstHomeView: View {
+struct AccountsHomeView: View {
     
     @ObservedObject var viewModel: LoginViewModel
     @State var isPresentingLoginView: Bool = false
@@ -20,7 +20,7 @@ struct AccounstHomeView: View {
                         .foregroundStyle(.secondary)
                         .padding(.top)
                 } else {
-                    List(viewModel.savedAccounts, id: \ .id) { account in
+                    List(viewModel.savedAccounts, id: \.id) { account in
                         Button {
                             viewModel.select(account: account)
                         } label: {
@@ -65,19 +65,7 @@ struct AccounstHomeView: View {
             }
             .sheet(isPresented: $isPresentingLoginView) {
                 LoginSheet { result in
-                    switch result {
-                    case .success(let secret):
-                        Task {
-                            do {
-                                let account = try await viewModel.usecase.execute(secret: secret)
-                                viewModel.savedAccounts.append(account)
-                            } catch {
-                                viewModel.errorMessage = "Erro ao buscar dados da conta."
-                            }
-                        }
-                    case .failure(let error):
-                        viewModel.errorMessage = "Login falhou: \(error.localizedDescription)"
-                    }
+                    viewModel.handleLoginResult(result)
                 }
             }
             .navigationDestination(isPresented: Binding(
@@ -85,13 +73,9 @@ struct AccounstHomeView: View {
                 set: { if !$0 { viewModel.selectedAccount = nil } }
             )) {
                 if let account = viewModel.selectedAccount {
-                    let service = InstagramService()
-                    let useCase = UserListViewModelUseCase(service: service)
-                    let viewModel = UserListViewModel(useCase: useCase)
-                    UserDashboardView(account: account, viewModel: viewModel)
+                    AppFactory.makeUserDashboardView(account: account)
                 }
             }
         }
     }
 }
-
