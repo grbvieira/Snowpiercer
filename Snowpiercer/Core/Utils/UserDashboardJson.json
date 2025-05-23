@@ -1,0 +1,67 @@
+{
+  "dashboard": {
+    "title": "Dashboard do Usuário",
+    "cards": [
+      {
+        "id": "followers",
+        "title": "Seguidores",
+        "icon": "person.2.fill",
+        "iconFontSize": 24.0,
+        "titleFontSize": 16.0,
+        "colors": {
+          "cardBackground": "#1E1E2E",
+          "iconColor": "#00C897",
+          "titleColor": "#FFFFFF"
+        }
+      },
+      {
+        "id": "following",
+        "title": "Seguindo",
+        "icon": "person.crop.circle.badge.checkmark",
+        "iconFontSize": 24.0,
+        "titleFontSize": 16.0,
+        "colors": {
+          "cardBackground": "#232330",
+          "iconColor": "#4CC9F0",
+          "titleColor": "#E0E0E0"
+        }
+      },
+      {
+        "id": "nonFollowers",
+        "title": "Não me seguem",
+        "icon": "person.crop.circle.badge.xmark",
+        "iconFontSize": 24.0,
+        "titleFontSize": 16.0,
+        "colors": {
+          "cardBackground": "#2C2C3A",
+          "iconColor": "#FF6B6B",
+          "titleColor": "#FFFFFF"
+        }
+      },
+      {
+        "id": "stories",
+        "title": "Stories",
+        "icon": "play.rectangle",
+        "iconFontSize": 24.0,
+        "titleFontSize": 16.0,
+        "colors": {
+          "cardBackground": "#1F2937",
+          "iconColor": "#FBBF24",
+          "titleColor": "#F9FAFB"
+        }
+      },
+      {
+        "id": "media",
+        "title": "Mídias",
+        "icon": "photo.on.rectangle",
+        "iconFontSize": 24.0,
+        "titleFontSize": 16.0,
+        "colors": {
+          "cardBackground": "#374151",
+          "iconColor": "#60A5FA",
+          "titleColor": "#D1D5DB"
+        }
+      }
+    ]
+  }
+}
