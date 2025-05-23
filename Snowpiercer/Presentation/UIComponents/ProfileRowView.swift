@@ -26,7 +26,7 @@ struct ProfileRowView: View {
                 HStack(spacing: 4) {
                     if let name = user.fullName {
                         Text(name)
-                            .font(.body)
+                            .font(SnowpiercerFont.body())
                             .foregroundStyle(Color.snowpiercerTextPrimary)
                     }
                     if display == .list {
@@ -39,7 +39,7 @@ struct ProfileRowView: View {
                 }
                 
                 Text("@\(user.username)")
-                    .font(.caption)
+                    .font(SnowpiercerFont.caption())
                     .foregroundStyle(Color.snowpiercerSecondaryText)
                 
             }
