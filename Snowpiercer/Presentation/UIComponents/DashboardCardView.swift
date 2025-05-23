@@ -11,16 +11,18 @@ struct DashboardCardView: View {
     let card:  DashboardWrapper.DashboarModel.Card
     
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: card.icon)
-                .font(.system(size: card.iconFontSize))
-                .foregroundColor(Color(hex: card.colors.iconColor))
+        VStack(alignment: .center, spacing: 8) {
+                Image(systemName: card.icon)
+                    .font(.system(size: card.iconFontSize))
+                    .foregroundColor(Color(hex: card.colors.iconColor))
+            
             Text(card.title)
                 .font(.system(size: card.titleFontSize))
                 .foregroundColor(Color(hex: card.colors.titleColor))
         }
         .frame(maxWidth: .infinity, minHeight: 100)
         .background(Color(hex: card.colors.cardBackground))
-        .cornerRadius(16)
+        .cornerRadius(12)
+        .shadow(radius: 2)
     }
 }
