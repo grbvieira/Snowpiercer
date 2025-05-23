@@ -20,24 +20,21 @@ struct AccountsHomeView: View {
                         .foregroundStyle(.secondary)
                         .padding(.top)
                 } else {
-                    List(viewModel.savedAccounts, id: \.id) { account in
+                    Spacer()
+                    ForEach(viewModel.savedAccounts, id: \.id) { account in
                         Button {
                             viewModel.select(account: account)
                         } label: {
-                            ProfileRowView(user: account.user)
+                            ProfileRowView(user: account.user,
+                                           display: .home)
                         }
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                viewModel.delete(account: account)
-                            } label: {
-                                Label("Excluir", systemImage: "trash")
-                            }
-                        }
-                        
+                        .background(Color.snowpiercerCard)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .padding(.horizontal)
                     }
-                    .listStyle(.sidebar)
                 }
                 
+                Spacer()
                 Button {
                     isPresentingLoginView = true
                 } label: {
@@ -52,8 +49,7 @@ struct AccountsHomeView: View {
                 }
                 .padding(.bottom)
             }
-            .toolbarTitleDisplayMode(.inlineLarge)
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inline)
             .navigationTitle("Contas Salvas")
             .onAppear {
                 viewModel.loadSavedAccounts()
@@ -76,6 +72,7 @@ struct AccountsHomeView: View {
                     AppFactory.makeUserDashboardView(account: account)
                 }
             }
+            .background(Color.snowpiercerBackground)
         }
     }
 }
