@@ -11,10 +11,7 @@ import SwiftUI
 struct SnowpiercerApp: App {
     var body: some Scene {
         WindowGroup {
-            let userService = UserService()
-            let usecase = FetchUserAfterLoginUseCase(userService: userService)
-            let viewModel = LoginViewModel(useCase: usecase)
-            AccountsHomeView(viewModel: viewModel)
+            AppFactory.makeSnowpiercerApp()
         }
     }
 }
