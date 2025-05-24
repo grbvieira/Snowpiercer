@@ -7,11 +7,6 @@
 
 import Foundation
 import Swiftagram
-// FIX: Passar para pasta correta
-protocol FetchUserAfterLoginUseCaseProtocol {
-    func execute(secret: Secret) async throws -> SavedAccount
-    func delete(secret: Secret)
-}
 
 struct FetchUserAfterLoginUseCase: FetchUserAfterLoginUseCaseProtocol {
     let userService: UserServiceProtocol
