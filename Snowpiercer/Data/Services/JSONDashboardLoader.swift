@@ -8,8 +8,13 @@
 import Foundation
 
 class JSONDashboardLoader: DashboardLoaderProtocol {
-    func loadDashboard() -> [DashboardWrapper.DashboardModel.Card] {
+    func loadDashboard() -> [DashboardCard] {
         guard let data = ReadJson.shared.get(archive: "UserDashboardJson") else { return [] }
-        return (try? JSONDecoder().decode(DashboardWrapper.self, from: data).dashboard.cards)!
+        do {
+            let wrapper = try JSONDecoder().decode(DashboardWrapper.self, from: data)
+            return wrapper.dashboard.cards
+        } catch {
+            return []
+        }
     }
 }
