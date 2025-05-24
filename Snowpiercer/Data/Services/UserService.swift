@@ -10,12 +10,10 @@ import Swiftagram
 import UIKit
 
 class UserService: UserServiceProtocol {
-    
     //MARK: Remove usuario do keychain e do cache local
     func deleteUser(secret: Swiftagram.Secret) {
         do {
             try Authenticator.keychain.secret(secret.identifier).delete()
-            AccountStorage.shared.delete(for: secret.identifier)
         } catch {
             print("Erro ao remover secret do Keychain: \(error)")
         }

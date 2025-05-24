@@ -9,12 +9,14 @@ import UIKit
 import Swiftagram
 import Combine
 
+
 @MainActor
-final class UserListViewModel: ObservableObject {
-    
+final class UserListViewModel: ObservableObject, @preconcurrency ErrorHandlingViewModel{
+
     // MARK: - Dependencies
     let useCase: UserListViewModelUseCaseProtocol
     private(set) var loggedUserSecret: Secret!
+    private let storageList: UserListStorageProtocol
     
     // MARK: - Published Properties (UI state)
     /// List user
@@ -29,10 +31,9 @@ final class UserListViewModel: ObservableObject {
     
     /// State
     @Published var isLoading = false
-    @Published var errorMessage: String?
     @Published var loadProgress: Double = 0.0
-    @Published var challengeURL: String? = nil
-    
+    @Published var errorMessage: String?
+    @Published var challengeURL: String?
     
     // MARK: - Cache Control
     private(set) var hasLoadedFollowers = false
@@ -42,8 +43,9 @@ final class UserListViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Init
-    init(useCase: UserListViewModelUseCaseProtocol) {
+    init(useCase: UserListViewModelUseCaseProtocol, storageList: UserListStorageProtocol) {
         self.useCase = useCase
+        self.storageList = storageList
         setupBindings()
     }
     
@@ -61,9 +63,9 @@ final class UserListViewModel: ObservableObject {
     
     // MARK: - Carregar do cache local
    private  func loadCachedLists(secret: Secret) {
-        followers = UserListStorage.shared.load(type: .followers, userID: secret.identifier)
-        following = UserListStorage.shared.load(type: .following, userID: secret.identifier)
-        nonFollowers = UserListStorage.shared.load(type: .unfollowers, userID: secret.identifier)
+        followers = storageList.load(type: .followers, userID: secret.identifier)
+        following = storageList.load(type: .following, userID: secret.identifier)
+        nonFollowers = storageList.load(type: .unfollowers, userID: secret.identifier)
         
         hasLoadedFollowers = !followers.isEmpty
         hasLoadedFollowing = !following.isEmpty
@@ -123,7 +125,7 @@ final class UserListViewModel: ObservableObject {
         hasLoadedFollowing = false
         hasLoadedNonFollowers = false
         
-        UserListStorage.shared.clearAll(for: secret.identifier)
+        storageList.clearAll(for: secret.identifier)
     }
     
     private func loadFollowersAndFollowing(secret: Secret) async {
@@ -139,7 +141,7 @@ final class UserListViewModel: ObservableObject {
         await runSafely {
             self.following = try await self.useCase.executeFollowing(secret: secret)
             self.hasLoadedFollowing = true
-            UserListStorage.shared.save(self.following, type: .following, userID: secret.identifier)
+            self.storageList.save(self.following, type: .following, userID: secret.identifier)
             await MainActor.run { self.loadProgress += 0.33 }
         }
         
@@ -152,7 +154,7 @@ final class UserListViewModel: ObservableObject {
         await runSafely {
             self.followers = try await self.useCase.executeFollowers(secret: secret)
             self.hasLoadedFollowers = true
-            UserListStorage.shared.save(self.followers, type: .followers, userID: secret.identifier)
+            self.storageList.save(self.followers, type: .followers, userID: secret.identifier)
             await MainActor.run { self.loadProgress += 0.33 }
         }
     }
@@ -163,7 +165,7 @@ final class UserListViewModel: ObservableObject {
         
         nonFollowers = useCase.executeNonFollowers(followers: followers, following: following)
         hasLoadedNonFollowers = true
-        UserListStorage.shared.save(nonFollowers, type: .unfollowers, userID: loggedUserSecret.identifier)
+        storageList.save(nonFollowers, type: .unfollowers, userID: loggedUserSecret.identifier)
         await MainActor.run { loadProgress += 0.34}
     }
     

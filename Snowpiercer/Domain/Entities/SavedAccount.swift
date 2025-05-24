@@ -4,7 +4,7 @@
 //
 //  Created by Gerson Vieira on 10/05/25.
 //
-import UIKit
+import Foundation
 import Swiftagram
 
 struct SavedAccount: Identifiable {

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DashboardCardView: View {
-    let card:  DashboardWrapper.DashboarModel.Card
+    let card:  DashboardWrapper.DashboardModel.Card
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {

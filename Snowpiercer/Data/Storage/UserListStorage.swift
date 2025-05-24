@@ -6,12 +6,9 @@
 //
 
 import Foundation
-import UIKit
 
-final class UserListStorage {
-    static let shared = UserListStorage()
-    private init() {}
-
+final class UserListStorage: UserListStorageProtocol {
+    
     private let fileManager = FileManager.default
 
     private func fileURL(for type: UserSectionCard, userID: String) -> URL {
