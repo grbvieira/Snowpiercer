@@ -4,7 +4,7 @@
 //
 //  Created by Gerson Vieira on 17/05/25.
 //
-import SwiftUI
+import Foundation
 
 extension InstagramUser {
     static var mock: InstagramUser {

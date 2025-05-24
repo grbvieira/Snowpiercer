@@ -5,12 +5,12 @@
 //  Created by Gerson Vieira on 19/05/25.
 //
 
-import SwiftUI
+import Foundation
 
 struct DashboardWrapper: Codable {
-    let dashboard: DashboarModel
+    let dashboard: DashboardModel
     
-    struct DashboarModel: Codable {
+    struct DashboardModel: Codable {
         let title: String
         let cards: [Card]
         

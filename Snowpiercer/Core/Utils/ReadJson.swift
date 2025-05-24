@@ -5,7 +5,7 @@
 //  Created by Gerson Vieira on 19/05/25.
 //
 
-import SwiftUI
+import Foundation
 
 final class ReadJson {
     static let shared = ReadJson()
