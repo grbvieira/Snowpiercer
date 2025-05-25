@@ -6,5 +6,5 @@
 //
 
 protocol DashboardLoaderProtocol {
-    func loadDashboard() -> [DashboardWrapper.DashboardModel.Card]
+    func loadDashboard() -> [DashboardCard]
 }
