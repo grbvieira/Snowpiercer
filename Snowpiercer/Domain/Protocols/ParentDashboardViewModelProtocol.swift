@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-protocol ParentDashboardViewModelProtocol: ErrorHandlingViewModel {
+protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
     // MARK: - Estado da UI
     var isLoading: Bool { get set }
     var loadProgress: Double { get set }
