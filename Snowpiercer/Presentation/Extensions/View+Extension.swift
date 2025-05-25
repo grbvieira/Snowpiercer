@@ -7,18 +7,13 @@
 
 import SwiftUI
 
-protocol ErrorHandlingViewModel: ObservableObject {
-    var errorMessage: String? { get set }
-    var challengeURL: String? { get }
-}
-
 extension View {
-    func errorHandling<T: ErrorHandlingViewModel>(viewModel: T) -> some View {
+    func errorHandling<T: ErrorHandlingProtocol>(viewModel: T) -> some View {
         self.modifier(ErrorAlertModifier(viewModel: viewModel))
     }
 }
 
-private struct ErrorAlertModifier<T: ErrorHandlingViewModel>: ViewModifier {
+private struct ErrorAlertModifier<T: ErrorHandlingProtocol>: ViewModifier {
     @ObservedObject var viewModel: T
     
     func body(content: Content) -> some View {
