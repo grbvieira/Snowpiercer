@@ -8,5 +8,5 @@ import Foundation
 
 protocol ErrorHandlingProtocol: ObservableObject {
     var errorMessage: String? { get set }
-    var challengeURL: String? { get }
+    var challengeURL: String? { get set }
 }

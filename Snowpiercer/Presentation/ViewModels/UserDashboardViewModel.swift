@@ -6,30 +6,19 @@
 //
 
 import SwiftUI
-/// Mover para pasta de protocolo?
-/// Provavelmente vai tudo pro case
-protocol DashboardLoaderProtocol {
-    func loadDashboard() -> [DashboardWrapper.DashboardModel.Card]
-}
 
-class JSONDashboardLoader: DashboardLoaderProtocol {
-    func loadDashboard() -> [DashboardWrapper.DashboardModel.Card] {
-        guard let data = ReadJson.shared.get(archive: "UserDashbiardJson") else { return [] }
-        return (try? JSONDecoder().decode(DashboardWrapper.self, from: data).dashboard.cards)!
-    }
-}
-
-class UserDashboardViewModel: ObservableObject {
-    
-    @Published var dashboardCards: [DashboardWrapper.DashboardModel.Card] = []
+@MainActor
+class UserDashboardViewModel: ObservableObject, @preconcurrency UserDashboardViewModelProtocol {
+  
+    @Published var dashboardCards: [DashboardCard] = []
     private let loader: DashboardLoaderProtocol
     
     init(loader: DashboardLoaderProtocol = JSONDashboardLoader()) {
         self.loader = loader
-        loadDashboard()
+        loadDashboardData()
     }
     
-    func loadDashboard() {
+    func loadDashboardData() {
         dashboardCards = loader.loadDashboard()
     }
 }

@@ -10,24 +10,25 @@ import Foundation
 struct DashboardWrapper: Codable {
     let dashboard: DashboardModel
     
-    struct DashboardModel: Codable {
-        let title: String
-        let cards: [Card]
-        
-        struct Card: Codable, Identifiable {
-            let id: String
-            let title: String
-            let icon: String
-            let iconFontSize: CGFloat
-            let titleFontSize: CGFloat
-            let colors: CardColors
-        }
-        
-        struct CardColors: Codable {
-            let cardBackground: String
-            let iconColor: String
-            let titleColor: String
-        }
-        
-    }
+}
+
+struct DashboardModel: Codable {
+    let title: String
+    let cards: [DashboardCard]
+}
+
+
+struct DashboardCard: Codable, Identifiable {
+    let id: String
+    let title: String
+    let icon: String
+    let iconFontSize: CGFloat
+    let titleFontSize: CGFloat
+    let colors: DashboardCardColors
+}
+
+struct DashboardCardColors: Codable {
+    let cardBackground: String
+    let iconColor: String
+    let titleColor: String
 }

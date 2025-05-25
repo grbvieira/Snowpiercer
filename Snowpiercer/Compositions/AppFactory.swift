@@ -14,8 +14,12 @@ final class AppFactory {
     static func makeUserDashboardView(account: SavedAccount) -> some View {
         
         let (useCase, storage) = makeUserListDependencies()
-        let viewModel = UserListViewModel(useCase: useCase, storageList: storage)
-        return UserDashboardView(account: account, viewModel: viewModel)
+        let dashVM = UserDashboardViewModel()
+        let listVM = UserListViewModel(useCase: useCase, storageList: storage)
+        let viewModel = ParentDashboardViewModel(viewModelDashboard: dashVM,
+                                                 viewModelUserList: listVM)
+        return UserDashboardView(account: account,
+                                 viewModel: viewModel)
     }
     
     static func makeSnowpiercerApp() -> some View {
