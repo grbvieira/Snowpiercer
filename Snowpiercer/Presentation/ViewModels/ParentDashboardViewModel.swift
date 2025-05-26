@@ -15,6 +15,9 @@ class ParentDashboardViewModel: ObservableObject, ParentDashboardViewModelProtoc
     //MARK: - Child ViewModels
     let userDashboardViewModel: any UserDashboardViewModelProtocol
     let userListViewModel: any UserListViewModelProtocol
+    var dashboardCards: [DashboardCard] {
+        userDashboardViewModel.dashboardCards
+    }
     
     //MARK: - UI State
     @Published var isLoading: Bool = false
@@ -64,7 +67,19 @@ extension ParentDashboardViewModel: ParentViewModelCoordinatorDelegate {
     }
     
     func handleError(_ error: any Error) {
-        self.errorMessage = error.localizedDescription
+        if let specializedError = error as? SpecializedError,
+           case let .generic(code, response) = specializedError,
+           code == "challenge_required" {
+            
+            let challengeWrapper = response["challenge"]
+            if challengeWrapper.dictionary() != nil {
+                self.challengeURL = "https://instagram.com/"
+                self.errorMessage = "Sua conta precisa passar por um desafio de verificação no Instagram. Volte novamente após o desafio."
+                return
+            }
+        }
+        
+        self.errorMessage = "Erro: \(error.localizedDescription)"
     }
     
     
