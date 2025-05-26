@@ -16,8 +16,8 @@ final class AppFactory {
         let (useCase, storage) = makeUserListDependencies()
         let dashVM = UserDashboardViewModel()
         let listVM = UserListViewModel(useCase: useCase, storageList: storage)
-        let viewModel = ParentDashboardViewModel(viewModelDashboard: dashVM,
-                                                 viewModelUserList: listVM)
+        let viewModel = ParentDashboardViewModel(userDashboardViewModel: dashVM,
+                                                 userListViewModel: listVM)
         return UserDashboardView(account: account,
                                  viewModel: viewModel)
     }
@@ -28,6 +28,24 @@ final class AppFactory {
         return AccountsHomeView(viewModel: viewModel)
     }
     
+    @ViewBuilder
+    static func makeDestination(for card: DashboardCard, using viewModel: UserListViewModel) -> some View {
+        switch card.id {
+        case "followers":
+            UserListView(type: .followers, viewModel: viewModel)
+        case "following":
+            UserListView(type: .following, viewModel: viewModel)
+        case "nonFollowers":
+            UserListView(type: .unfollowers, viewModel: viewModel)
+        case "stories":
+            Text("Stories View")
+        case "media":
+            Text("Media View")
+        default:
+            EmptyView()
+        }
+    }
+
     // MARK: - Métodos auxiliares
     
     private static func makeUserListDependencies() -> (UserListViewModelUseCaseProtocol, UserListStorageProtocol) {
