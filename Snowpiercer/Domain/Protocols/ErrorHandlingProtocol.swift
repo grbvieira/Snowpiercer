@@ -1,5 +1,5 @@
 //
-//  ErrorHandlingViewModel.swift
+//  ErrorHandlingProtocol.swift
 //  Snowpiercer
 //
 //  Created by Gerson Vieira on 25/05/25.

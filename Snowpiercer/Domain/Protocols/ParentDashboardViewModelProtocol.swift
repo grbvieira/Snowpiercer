@@ -13,6 +13,7 @@ protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
     // MARK: - Estado da UI
     var isLoading: Bool { get set }
     var loadProgress: Double { get set }
+    var dashboardCards: [DashboardCard] { get }
     
     // MARK: - ViewModel filhos
     var userDashboardViewModel: any UserDashboardViewModelProtocol { get }

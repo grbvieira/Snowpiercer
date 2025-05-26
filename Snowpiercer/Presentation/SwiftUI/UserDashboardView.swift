@@ -12,11 +12,6 @@ struct UserDashboardView: View {
     @State private var selectedTab: UserSectionCard?
     var viewModel: any ParentDashboardViewModelProtocol
     
-    init(account: SavedAccount, viewModel: ParentDashboardViewModel) {
-        self.account = account
-        self.viewModel = viewModel
-    }
-    
     var body: some View {
         ZStack {
             ScrollView {
@@ -33,10 +28,7 @@ struct UserDashboardView: View {
             }
         }
         .navigationTitle("Visão Geral")
-//        .toolbar {
-//            refreshButton
-//        }
-        .errorHandling(viewModel: viewModel)
+        .errorHandling(viewModel: viewModel as! ParentDashboardViewModel)
         .task {
             await viewModel.loadInitialData(account: account)
         }
@@ -46,9 +38,8 @@ struct UserDashboardView: View {
     
     private var profileHeader: some View {
         VStack(spacing: 8) {
-            AvatarView(size: .max,
-                       user: account.user)
-            .padding(.top, 32)
+            AvatarView(size: .max, user: account.user)
+                .padding(.top, 32)
             
             if let fullName = account.user.fullName {
                 Text(fullName)
@@ -63,11 +54,11 @@ struct UserDashboardView: View {
     
     private var cardGrid: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 16) {
-            ForEach(viewModel.dashboardVM.dashboardCards) { card in
-                DashboardCardView(card: card)
-                    .onTapGesture {
-                        handleCardTap(card)
-                    }
+            ForEach(viewModel.dashboardCards) { card in
+                NavigationLink(destination: AppFactory.makeDestination(for: card,
+                                                                       using: viewModel.userListViewModel as! UserListViewModel)) {
+                    DashboardCardView(card: card)
+                }
             }
         }
         .padding()
@@ -80,23 +71,11 @@ struct UserDashboardView: View {
     }
     
     // MARK: - Action
-
+    
     private func refreshData() {
         Task {
             await viewModel.refreshData()
         }
     }
     
-    // MARK: - Logic
-    private func handleCardTap(_ card: DashboardCard) {
-        switch card.id {
-        case "followers":
-            selectedTab = .followers
-        case "following":
-            selectedTab = .following
-        case "nonFollowers":
-            selectedTab = .unfollowers
-        default: break
-        }
-    }
 }
