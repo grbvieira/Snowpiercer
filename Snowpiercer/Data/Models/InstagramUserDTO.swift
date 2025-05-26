@@ -8,16 +8,6 @@
 import Foundation
 import Swiftagram
 
-//
-//  InstagramUserDTO.swift
-//  Snowpiercer
-//
-//  Created by Gerson Vieira on 11/05/25.
-//
-
-import Foundation
-import Swiftagram
-
 struct InstagramUserDTO: Codable {
     let identifier: String
     let username: String
