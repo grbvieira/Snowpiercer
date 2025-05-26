@@ -14,11 +14,16 @@ protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
     var loadProgress: Double { get set }
     
     // MARK: - ViewModel filhos
-    var userDashboardViewModel: UserDashboardViewModelProtocol { get }
-    var userListViewModel: UserListViewModelProtocol { get }
+    var userDashboardViewModel: any UserDashboardViewModelProtocol { get }
+    var userListViewModel: any UserListViewModelProtocol { get }
     
     // MARK: - Carregar dados iniciais 
     
     func loadInitialData(account: SavedAccount) async
     func refreshData() async
+}
+
+protocol ParentViewModelCoordinatorDelegate: AnyObject {
+    func updateProgress(_ progress: Double)
+    func handleError(_ error: Error)
 }
