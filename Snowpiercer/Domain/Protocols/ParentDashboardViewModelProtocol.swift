@@ -23,8 +23,3 @@ protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
     func loadInitialData(account: SavedAccount) async
     func refreshData() async
 }
-
-protocol ParentViewModelCoordinatorDelegate: AnyObject {
-    func updateProgress(_ progress: Double)
-    func handleError(_ error: Error)
-}

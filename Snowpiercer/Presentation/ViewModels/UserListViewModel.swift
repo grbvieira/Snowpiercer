@@ -6,19 +6,15 @@
 //
 
 import Combine
+import Foundation
 import Swiftagram
 
 @MainActor
-final class UserListViewModel: ObservableObject, @preconcurrency
-    UserListViewModelProtocol
-{
-    func loadUserList(forceReload: Bool) async {}
-    func loadCachedLists() {}
+final class UserListViewModel: ObservableObject, UserListViewModelProtocol {
 
     // MARK: - Dependencies
     private let useCase: UserListViewModelUseCaseProtocol
     private let storageList: UserListStorageProtocol
-    ///Fazer Estudo de caso para subistituir por combine
     private weak var parentCoordinatorDelegate:
         ParentViewModelCoordinatorDelegate?
 
@@ -36,17 +32,19 @@ final class UserListViewModel: ObservableObject, @preconcurrency
     private var hasLoadedFollowingFromAPI = false
 
     // MARK: - Internal State
-    private var loggedUserSecret: Secret?  // Armazena o segredo do usuario logado
-    private var cancellables = Set<AnyCancellable>()  // gerencia subscriptions do combine
-    private var loadTask: Task<Void, Never>?  // gerencia a tarefa de carregamento concorrent
+    private var loggedUserSecret: Secret?
+    private var cancellables = Set<AnyCancellable>()
+    private var loadTask: Task<Void, Never>?
 
     // MARK: - Init
     init(
         useCase: UserListViewModelUseCaseProtocol,
-        storageList: UserListStorageProtocol
+        storageList: UserListStorageProtocol,
+        parentCoordinatorDelegate: ParentViewModelCoordinatorDelegate? = nil
     ) {
         self.useCase = useCase
         self.storageList = storageList
+        self.parentCoordinatorDelegate = parentCoordinatorDelegate
         setupBindings()
     }
 
@@ -55,6 +53,7 @@ final class UserListViewModel: ObservableObject, @preconcurrency
         guard self.loggedUserSecret!.identifier != secret.identifier else {
             return
         }
+
         self.loggedUserSecret = secret
         resetLocalState()
         loadCachedLists()
@@ -62,176 +61,137 @@ final class UserListViewModel: ObservableObject, @preconcurrency
     }
 
     // MARK: - Carregar do cache local
+    func loadCachedLists() {
+        guard let secret = loggedUserSecret else { return }
+        loadCachedLists(secret: secret)
+    }
+
     private func loadCachedLists(secret: Secret) {
-        let cachedFollowers = storageList.load(
+        followers = storageList.load(
             type: .followers,
             userID: secret.identifier
         )
-        
-        let cachedFollowing = storageList.load(
+        following = storageList.load(
             type: .following,
             userID: secret.identifier
         )
-        let cachedNonFollowers = storageList.load(
-            type: .unfollowers,
-            userID: secret.identifier
-        )
 
-        if !cachedFollowers.isEmpty && !hasLoadedFollowersFromAPI {
-            self.followers = cachedFollowers
+        if followers.isEmpty || following.isEmpty {
+            nonFollowers = []
+        } else {
+            let cached = storageList.load(
+                type: .unfollowers,
+                userID: secret.identifier
+            )
+            nonFollowers =
+                cached.isEmpty
+                ? useCase.executeNonFollowers(
+                    followers: followers,
+                    following: following
+                ) : cached
         }
 
-        if !cachedFollowing.isEmpty && !hasLoadedFollowingFromAPI {
-            self.following = cachedFollowing
-        }
-
-        if !cachedFollowing.isEmpty && !cachedFollowers.isEmpty {
-            if cachedNonFollowers.isEmpty {
-                self.nonFollowers = useCase.executeNonFollowers(
-                    followers: self.followers,
-                    following: self.following
-                )
-            } else {
-                self.nonFollowers = cachedNonFollowers
-            }
-        }
-
-        self.hasLoadedInitialData =
-            !self.followers.isEmpty || !self.following.isEmpty
+        hasLoadedInitialData = !followers.isEmpty || !following.isEmpty
         updateFilteredUsers()
     }
 
-    // MARK: - Carregar todos os dados com controle de cache
-    func loadUserLists(forceReload: Bool = false) async {
+    func loadUserList(forceReload: Bool) async {
         guard let secret = loggedUserSecret else {
-            await parentCoordinatorDelegate?.handleError(
-                UserListError.missingSecret
-            )
+            parentCoordinatorDelegate?.handleError(UserListError.missingSecret)
             return
         }
 
+        if forceReload { clearAPICache() }
+
         loadTask?.cancel()
-
         loadTask = Task {
-            await parentCoordinatorDelegate?.updateProgress(0.0)
+            parentCoordinatorDelegate?.updateProgress(0.0)
 
-            if forceReload {
-                clearAPICache()
-            }
-
-            async let followersResult = loadFollowersFromAPIIfNeeded(
-                secret: secret
-            )
-            async let followingResult = loadFollowingFromAPIIfNeeded(
-                secret: secret
-            )
-
+            async let followersResult = loadFollowersIfNeeded(secret: secret)
+            async let followingResult = loadFollowingIfNeeded(secret: secret)
             let (followersSuccess, followingSuccess) = await (
                 followersResult, followingResult
             )
 
             if followersSuccess && followingSuccess {
                 await filterAndStoreNonFollowers(secret: secret)
-                await parentCoordinatorDelegate?.updateProgress(1.0)
+                parentCoordinatorDelegate?.updateProgress(1.0)
             } else {
-                await parentCoordinatorDelegate?.updateProgress(-1.0)
+                parentCoordinatorDelegate?.updateProgress(-1.0)
             }
 
-            self.hasLoadedInitialData = true
-            self.loadTask = nil
+            hasLoadedInitialData = true
+            loadTask = nil
         }
         await loadTask?.value
     }
 
-    //MARK: - Private Loading Helpers
-
-    // MARK: - Following from the API if needed
-    private func loadFollowingFromAPIIfNeeded(secret: Secret) async -> Bool {
-        guard !hasLoadedFollowingFromAPI else {
-            await parentCoordinatorDelegate?.updateProgress(0.33)
+    private func loadFollowersIfNeeded(secret: Secret) async -> Bool {
+        guard !hasLoadedFollowersFromAPI else {
+            parentCoordinatorDelegate?.updateProgress(0.33)
             return true
         }
 
-        await runSafely {
-            let fechedFollowing = try await self.useCase.executeFollowing(
-                secret: secret
-            )
-            self.following = fechedFollowing
-            self.hasLoadedFollowingFromAPI = true
-            self.storageList.save(
-                self.following,
-                type: .following,
-                userID: secret.identifier
-            )
-            await self.parentCoordinatorDelegate?.updateProgress(0.33)
-        }
-
-    }
-
-    // MARK: - Follower from the API if needed
-    private func loadFollowersFromAPIIfNeeded(secret: Secret) async -> Bool {
-        guard !hasLoadedFollowingFromAPI else {
-            await parentCoordinatorDelegate?.updateProgress(0.33)
-            return true
-        }
-
-        await runSafely {
-            let fechedFollower = try await self.useCase.executeFollowers(
-                secret: secret
-            )
+        return await runSafely {
+            let result = try await self.useCase.executeFollowers(secret: secret)
+            self.followers = result
             self.hasLoadedFollowersFromAPI = true
             self.storageList.save(
-                self.following,
+                result,
                 type: .followers,
                 userID: secret.identifier
             )
-            await self.parentCoordinatorDelegate?.updateProgress(0.33)
+            self.parentCoordinatorDelegate?.updateProgress(0.33)
         }
-
     }
 
-    // MARK: - Filters and stores the list of unfollowers
-    private func filterAndStoreNonFollowers(secret: Secret) async {
-        guard hasLoadedFollowingFromAPI, hasLoadedFollowersFromAPI else {
-            return
+    private func loadFollowingIfNeeded(secret: Secret) async -> Bool {
+        guard !hasLoadedFollowingFromAPI else {
+            parentCoordinatorDelegate?.updateProgress(0.33)
+            return true
         }
+        return await runSafely {
+            let result = try await self.useCase.executeFollowing(secret: secret)
+            self.following = result
+            self.hasLoadedFollowingFromAPI = true
+            self.storageList.save(
+                result,
+                type: .following,
+                userID: secret.identifier
+            )
+            self.parentCoordinatorDelegate?.updateProgress(0.33)
+        }
+    }
 
-        let filterNonFollowers = useCase.executeNonFollowers(
+    private func filterAndStoreNonFollowers(secret: Secret) async {
+        let result = useCase.executeNonFollowers(
             followers: followers,
             following: following
         )
-        
-        self.nonFollowers = filterNonFollowers
-        storageList.save(
-            self.nonFollowers,
-            type: .unfollowers,
-            userID: secret.identifier
-        )
-        
-        await parentCoordinatorDelegate?.updateProgress(0.34)
+        self.nonFollowers = result
+        storageList.save(result, type: .unfollowers, userID: secret.identifier)
+        parentCoordinatorDelegate?.updateProgress(0.34)
         updateFilteredUsers()
     }
 
-    // MARK: - Combine bindings for reactively filtering
     private func setupBindings() {
         Publishers.CombineLatest($searchText, $currentListType)
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
-            .map { [weak self] (text, type) -> [InstragramUser] in
+            .map { [weak self] (text, type) -> [InstagramUser] in
                 guard let self = self else { return [] }
-                let sourceList = self.sourceList(for: type)
-                return self.filter(list: sourceList, with: text)
-
+                let source = self.sourceList(for: type)
+                return self.filter(list: source, with: text)
             }
-            .assign(to: &filteredUsers)
+            .assign(to: &$filteredUsers)
     }
 
-    // MARK: - Manually refresh the filtered list (used after uploads)
     private func updateFilteredUsers() {
-        let sourceList = self.sourceList(for: currentType)
-        self.filteredUsers = self.filter(list: sourceList, with: searchText)
+        filteredUsers = filter(
+            list: sourceList(for: currentListType),
+            with: searchText
+        )
     }
 
-    // MARK: - Returns the source list based on the selected type
     private func sourceList(for type: UserSectionCard) -> [InstagramUser] {
         switch type {
         case .followers: return followers
@@ -240,25 +200,20 @@ final class UserListViewModel: ObservableObject, @preconcurrency
         }
     }
 
-    //MARK: -  Filter based on the text
     private func filter(list: [InstagramUser], with text: String)
         -> [InstagramUser]
     {
         guard !text.isEmpty else { return list }
         let lowercasedText = text.lowercased()
-
         return list.filter {
             $0.username.lowercased().contains(lowercasedText)
                 || ($0.fullName?.lowercased().contains(lowercasedText) ?? false)
         }
     }
 
-    //MARK: State Mamagement
     private func clearAPICache() {
         hasLoadedFollowersFromAPI = false
         hasLoadedFollowingFromAPI = false
-        ///Limpar cache do youser default?
-        //  storageList.clearAll(for: secret.identifier)
     }
 
     private func resetLocalState() {
@@ -271,13 +226,16 @@ final class UserListViewModel: ObservableObject, @preconcurrency
     }
 
     private func runSafely(_ operation: @escaping () async throws -> Void) async
+        -> Bool
     {
         do {
             try await operation()
+            return true
         } catch {
             await MainActor.run {
                 self.parentCoordinatorDelegate?.handleError(error)
             }
+            return false
         }
     }
 }
