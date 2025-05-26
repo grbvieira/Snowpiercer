@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@MainActor
 protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
     // MARK: - Estado da UI
     var isLoading: Bool { get set }

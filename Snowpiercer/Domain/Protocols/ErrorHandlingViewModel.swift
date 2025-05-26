@@ -6,6 +6,7 @@
 //
 import Foundation
 
+@MainActor
 protocol ErrorHandlingProtocol: ObservableObject {
     var errorMessage: String? { get set }
     var challengeURL: String? { get set }

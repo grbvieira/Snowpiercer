@@ -6,6 +6,7 @@
 //
 import Foundation
 
+@MainActor
 protocol UserDashboardViewModelProtocol: ObservableObject {
     var dashboardCards: [DashboardCard] { get }
     func loadDashboardData()
