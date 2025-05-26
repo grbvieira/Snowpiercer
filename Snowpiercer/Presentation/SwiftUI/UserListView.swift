@@ -20,7 +20,7 @@ struct UserListView: View {
                 LazyVStack(spacing: 12) {
                     ForEach(viewModel.filteredUsers, id: \.username) { user in
                         HStack {
-                            ProfileRowView(user: user)
+                            ProfileRowView(user: user, display: .list)
                             
                             FollowButton {
                                 if let url = URL(string: "https://instagram.com/\(user.username)") {

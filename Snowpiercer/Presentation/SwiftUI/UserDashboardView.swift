@@ -10,78 +10,93 @@ import SwiftUI
 struct UserDashboardView: View {
     let account: SavedAccount
     @State private var selectedTab: UserSectionCard?
-    @ObservedObject var viewModel: UserListViewModel
-    @Environment(\.dismiss) private var dismiss
-
-    private let gridItems = [
-        GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12),
-        GridItem(.flexible(minimum: 120, maximum: 200), spacing: 12)
-    ]
-
+    var viewModel: any ParentDashboardViewModelProtocol
+    
+    init(account: SavedAccount, viewModel: ParentDashboardViewModel) {
+        self.account = account
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
         ZStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    VStack(spacing: 8) {
-                        AvatarView(size: .max,
-                                   user: account.user)
-                            .padding(.top, 32)
-
-                        if let fullName = account.user.fullName {
-                            Text(fullName)
-                                .font(.title2.bold())
-                        }
-
-                        Text("@\(account.user.username)")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-
-                    LazyVGrid(columns: gridItems, spacing: 16) {
-                        ForEach(UserSectionCard.allCases, id: \ .self) { item in
-                            NavigationLink {
-                                destinationView(for: item)
-                            } label: {
-                                DashboardCard(title: item.title, icon: item.icon)
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 24)
+                    profileHeader
+                    cardGrid
                 }
             }
             .disabled(viewModel.isLoading)
             .blur(radius: viewModel.isLoading ? 3 : 0)
-
+            
             if viewModel.isLoading {
                 LoadingOverlayView(progress: viewModel.loadProgress)
             }
         }
         .navigationTitle("Visão Geral")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    Task {
-                        await viewModel.loadAllData(forceReload: true)
-                    }
-                }) {
-                    Image(systemName: "arrow.clockwise")
-                }
-            }
-        }
+//        .toolbar {
+//            refreshButton
+//        }
         .errorHandling(viewModel: viewModel)
-        .alert("Aviso", isPresented: $showAlert) {
-            Button("Fechar", role: .cancel) { }
-        } message: {
-            Text(viewModel.errorMessage ?? "Erro desconhecido")
-        }
         .task {
-            await viewModel.prepareDashboard(with: account.secret)
+            await viewModel.loadInitialData(account: account)
         }
     }
+    
+    // MARK: - Subviews
+    
+    private var profileHeader: some View {
+        VStack(spacing: 8) {
+            AvatarView(size: .max,
+                       user: account.user)
+            .padding(.top, 32)
+            
+            if let fullName = account.user.fullName {
+                Text(fullName)
+                    .font(SnowpiercerFont.heading())
+            }
+            
+            Text("@\(account.user.username)")
+                .font(SnowpiercerFont.body())
+                .foregroundColor(.snowpiercerSecondaryText)
+        }
+    }
+    
+    private var cardGrid: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150))], spacing: 16) {
+            ForEach(viewModel.dashboardVM.dashboardCards) { card in
+                DashboardCardView(card: card)
+                    .onTapGesture {
+                        handleCardTap(card)
+                    }
+            }
+        }
+        .padding()
+    }
+    
+    private var refreshButton: some View {
+        Button(action: refreshData) {
+            Image(systemName: "arrow.clockwise")
+        }
+    }
+    
+    // MARK: - Action
 
-    @ViewBuilder
-    private func destinationView(for item: UserSectionCard) -> some View {
-        UserListView(type: item, viewModel: viewModel)
+    private func refreshData() {
+        Task {
+            await viewModel.refreshData()
+        }
+    }
+    
+    // MARK: - Logic
+    private func handleCardTap(_ card: DashboardCard) {
+        switch card.id {
+        case "followers":
+            selectedTab = .followers
+        case "following":
+            selectedTab = .following
+        case "nonFollowers":
+            selectedTab = .unfollowers
+        default: break
+        }
     }
 }
