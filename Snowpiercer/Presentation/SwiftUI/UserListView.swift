@@ -11,7 +11,7 @@ struct UserListView: View {
     
     let type: UserSectionCard
     
-    @StateObject var viewModel: UserListViewModel
+    @ObservedObject var viewModel: UserListViewModel
     
     var body: some View {
         VStack(spacing: 12) {
