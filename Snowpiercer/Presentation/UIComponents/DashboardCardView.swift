@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DashboardCardView: View {
     let card:  DashboardCard
+    let count: Int
     
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
@@ -17,6 +18,10 @@ struct DashboardCardView: View {
                     .foregroundColor(Color(hex: card.colors.iconColor))
             
             Text(card.title)
+                .font(.system(size: card.titleFontSize))
+                .foregroundColor(Color(hex: card.colors.titleColor))
+            
+            Text(String(count))
                 .font(.system(size: card.titleFontSize))
                 .foregroundColor(Color(hex: card.colors.titleColor))
         }
