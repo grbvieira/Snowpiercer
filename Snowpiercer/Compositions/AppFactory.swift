@@ -12,14 +12,12 @@ import SwiftUI
 final class AppFactory {
     
     static func makeUserDashboardView(account: SavedAccount) -> some View {
-        
         let (useCase, storage) = makeUserListDependencies()
         let dashVM = UserDashboardViewModel()
-        let listVM = UserListViewModel(useCase: useCase, storageList: storage)
+        let listVM = UserListViewModel(useCase: useCase, storageList: storage, account: account)
         let viewModel = ParentDashboardViewModel(userDashboardViewModel: dashVM,
                                                  userListViewModel: listVM)
-        return UserDashboardView(account: account,
-                                 viewModel: viewModel)
+        return UserDashboardView(user: account.user, viewModel: viewModel)
     }
     
     static func makeSnowpiercerApp() -> some View {

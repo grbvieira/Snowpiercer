@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserDashboardView: View {
-    let account: SavedAccount
+    let user: InstagramUser
     @State private var selectedTab: UserSectionCard?
     var viewModel: any ParentDashboardViewModelProtocol
     
@@ -20,17 +20,15 @@ struct UserDashboardView: View {
                     cardGrid
                 }
             }
-            .disabled(viewModel.isLoading)
-            .blur(radius: viewModel.isLoading ? 3 : 0)
-            
-            if viewModel.isLoading {
-                LoadingOverlayView(progress: viewModel.loadProgress)
-            }
+            .loadingProgressOverlay(viewModel: viewModel.userListViewModel as! UserListViewModel)
+        }
+        .toolbar{
+            refreshButton
         }
         .navigationTitle("Visão Geral")
-        .errorHandling(viewModel: viewModel as! ParentDashboardViewModel)
+        .errorHandling(viewModel: viewModel.userListViewModel as! UserListViewModel)
         .task {
-            await viewModel.loadInitialData(account: account)
+            await viewModel.loadInitialData()
         }
     }
     
@@ -38,15 +36,15 @@ struct UserDashboardView: View {
     
     private var profileHeader: some View {
         VStack(spacing: 8) {
-            AvatarView(size: .max, user: account.user)
+            AvatarView(size: .max, user: user)
                 .padding(.top, 32)
             
-            if let fullName = account.user.fullName {
+            if let fullName = user.fullName {
                 Text(fullName)
                     .font(SnowpiercerFont.heading())
             }
             
-            Text("@\(account.user.username)")
+            Text("@\(user.username)")
                 .font(SnowpiercerFont.body())
                 .foregroundColor(.snowpiercerSecondaryText)
         }
@@ -57,11 +55,21 @@ struct UserDashboardView: View {
             ForEach(viewModel.dashboardCards) { card in
                 NavigationLink(destination: AppFactory.makeDestination(for: card,
                                                                        using: viewModel.userListViewModel as! UserListViewModel)) {
-                    DashboardCardView(card: card)
+                    let count = returnCount(card: card)
+                    DashboardCardView(card: card, count: count)
                 }
             }
         }
         .padding()
+    }
+    
+    private func returnCount(card: DashboardCard) -> Int{
+        switch card.id {
+        case "followers": return viewModel.userListViewModel.followers.count
+        case "following": return viewModel.userListViewModel.following.count
+        case "nfollowers": return viewModel.userListViewModel.nonFollowers.count
+        default: return 0
+        }
     }
     
     private var refreshButton: some View {

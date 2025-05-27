@@ -56,6 +56,10 @@ class LoginViewModel: ObservableObject {
         }
     }
     
+    func select(account: SavedAccount) {
+        selectedAccount = account
+    }
+    
     func delete(account: SavedAccount) {
         usecase.delete(secret: account.secret)
         accountStorage.delete(for: account.secret.identifier)

@@ -9,10 +9,8 @@ import Combine
 import Foundation
 
 @MainActor
-protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
+protocol ParentDashboardViewModelProtocol {
     // MARK: - Estado da UI
-    var isLoading: Bool { get set }
-    var loadProgress: Double { get set }
     var dashboardCards: [DashboardCard] { get }
     
     // MARK: - ViewModel filhos
@@ -21,6 +19,6 @@ protocol ParentDashboardViewModelProtocol: ErrorHandlingProtocol {
     
     // MARK: - Carregar dados iniciais 
     
-    func loadInitialData(account: SavedAccount) async
+    func loadInitialData() async
     func refreshData() async
 }

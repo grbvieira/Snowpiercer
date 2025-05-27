@@ -19,7 +19,6 @@ protocol UserListViewModelProtocol: ObservableObject {
     var currentListType: UserSectionCard { get set }
     var hasLoadedInitialData: Bool { get }
     
-    func setup(with secret: Secret)
+    func setup()
     func loadUserList(forceReload: Bool) async
-    func loadCachedLists()
 }
