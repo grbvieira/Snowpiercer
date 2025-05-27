@@ -13,13 +13,9 @@ import SwiftUICore
 @MainActor
 final class UserListViewModel: ObservableObject, UserListViewModelProtocol, ErrorHandlingProtocol, HasLoadingStateProtocol {
     
-
     // MARK: - Dependencies
     private let useCase: UserListViewModelUseCaseProtocol
     private let storageList: UserListStorageProtocol
-
-    //MARK: - Enviroment
-    @EnvironmentObject var session: SessionStore
     
     // MARK: - Published Properties (UI state)
     @Published private(set) var followers: [InstagramUser] = []
@@ -43,11 +39,16 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
     // MARK: - Internal State
     private var cancellables = Set<AnyCancellable>()
     private var loadTask: Task<Void, Never>?
+    private var account: SavedAccount
+    var secret: Secret {
+        return account.secret
+    }
 
     // MARK: - Init
-    init(useCase: UserListViewModelUseCaseProtocol, storageList: UserListStorageProtocol) {
+    init(useCase: UserListViewModelUseCaseProtocol, storageList: UserListStorageProtocol, account: SavedAccount) {
         self.useCase = useCase
         self.storageList = storageList
+        self.account = account
         setupBindings()
     }
 
@@ -58,7 +59,6 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
     }
 
     private func loadCachedLists() {
-        guard let secret = session.currentSecret else { return }
         followers = storageList.load(type: .followers, userID: secret.identifier)
         following = storageList.load(type: .following, userID: secret.identifier)
 
@@ -74,11 +74,6 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
     }
 
     func loadUserList(forceReload: Bool) async {
-        guard let secret = session.currentSecret else {
-            errorMessage = "Token de acesso ausente."
-            return
-        }
-
         if forceReload { clearAPICache() }
 
         loadTask?.cancel()
