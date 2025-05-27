@@ -18,7 +18,8 @@ protocol UserListViewModelProtocol: ObservableObject {
     var searchText: String { get set }
     var currentListType: UserSectionCard { get set }
     var hasLoadedInitialData: Bool { get }
-    
+    var isDataLoaded: Bool { get }
+
     func setup()
     func loadUserList(forceReload: Bool) async
 }

@@ -27,10 +27,13 @@ class ParentDashboardViewModel: ObservableObject, ParentDashboardViewModelProtoc
     
     // MARK: - Load Initial Data
     func loadInitialData() async {
-        async let setupTask: () = userListViewModel.setup()
-        async let loadListTask: () = userListViewModel.loadUserList(forceReload: false)
-        _ = await (setupTask, loadListTask)
+        userListViewModel.setup()
+        guard !userListViewModel.isDataLoaded else {
+            return
+        }
+        await userListViewModel.loadUserList(forceReload: false)
     }
+
     
     // MARK: Update Data
     func refreshData() async {

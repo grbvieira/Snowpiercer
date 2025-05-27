@@ -43,6 +43,9 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
     var secret: Secret {
         return account.secret
     }
+    var isDataLoaded: Bool {
+        hasLoadedInitialData
+    }
 
     // MARK: - Init
     init(useCase: UserListViewModelUseCaseProtocol, storageList: UserListStorageProtocol, account: SavedAccount) {
@@ -54,7 +57,6 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
 
     // MARK: - Setup
     func setup() {
-        resetLocalState()
         loadCachedLists()
     }
 
@@ -74,7 +76,7 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
     }
 
     func loadUserList(forceReload: Bool) async {
-        if forceReload { clearAPICache() }
+        if forceReload { resetLocalState() }
 
         loadTask?.cancel()
         isLoading = true
@@ -173,6 +175,7 @@ final class UserListViewModel: ObservableObject, UserListViewModelProtocol, Erro
     private func clearAPICache() {
         hasLoadedFollowersFromAPI = false
         hasLoadedFollowingFromAPI = false
+        storageList.clearAll(for: secret.identifier)
     }
 
     private func resetLocalState() {
